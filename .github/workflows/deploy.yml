@@ -1,0 +1,29 @@
+---
+name: Deploy Action
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+      user_name:
+         required: false
+         default: hpi-schul-clud-bot
+         type: string
+      user_email:
+         required: false
+         default: bot@hpi-schul-cloud.de
+         type: string
+    secrets:
+      DEV_KUBE_CONFIG:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  create_branch_identifier:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
+    with:
+      branch: ${{ inputs.branch }}
