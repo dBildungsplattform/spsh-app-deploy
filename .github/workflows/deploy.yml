@@ -60,7 +60,7 @@ jobs:
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
-          releaseNameRegEx: 'iam'
+          releaseNameRegEx: 'dbildungs-iam-0.0.0-${{ inputs.branch }'
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
       - name: Check getByReleaseNameRegEx step result
@@ -73,6 +73,8 @@ jobs:
   
   # The workflow must contain at least one job with no dependencies
   deploy-successful:
+    needs:
+      - search-helm-charts
     runs-on: ubuntu-latest
     steps:
       - run: echo "deploy was successful"
