@@ -1,0 +1,31 @@
+---
+name: Deploy Project manually into dev cluster
+
+on:
+  workflow_dispatch:
+     inputs:
+      namespace:
+        type: string
+        description: Kubernetes namespace in dev to deploy
+        required: true
+      branch:
+        type: string
+        description: Branch to deploy in dev (default is main)
+        default: main
+
+jobs:
+  create_branch_identifier:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
+    with:
+      branch: ${{ github.event.inputs.branch }}
+
+  deploy:
+    needs:
+      - create_branch_identifier
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@main
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      namespace: ${{ needs.create_branch_identifier.outputs.namespace_from_branch }}
+      user_name: spsh-bot
+    secrets:
+      DEV_KUBE_CONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}

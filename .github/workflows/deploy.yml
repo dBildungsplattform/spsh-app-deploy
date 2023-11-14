@@ -7,23 +7,29 @@ on:
       branch:
         required: true
         type: string
+      namespace:
+        required: true
+        type: string
       user_name:
          required: false
-         default: hpi-schul-clud-bot
-         type: string
-      user_email:
-         required: false
-         default: bot@hpi-schul-cloud.de
+         default: spsh-bot
          type: string
     secrets:
       DEV_KUBE_CONFIG:
         required: true
-
 permissions:
   contents: read
 
 jobs:
-  create_branch_identifier:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
-    with:
-      branch: ${{ inputs.branch }}
+  # Create Namespace
+
+  # Search for helm charts
+
+  # Deploy Helmcharts
+
+  deploy-successful:
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "deploy was successful"
