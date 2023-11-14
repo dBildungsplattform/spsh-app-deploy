@@ -64,11 +64,7 @@ jobs:
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
       - name: Check getByReleaseNameRegEx step result
-        run: |
-          echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
-          echo "${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}"
-
-
+        run: echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" && echo "${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}"
   # Deploy Helmcharts
   
   # The workflow must contain at least one job with no dependencies
