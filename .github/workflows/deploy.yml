@@ -53,6 +53,8 @@ jobs:
   # Search for helm charts          
   search-helm-charts:
     runs-on: 'ubuntu-latest'
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - name: Get releases by ticket name by releaseNameRegEx
         id: getByReleaseNameRegEx
@@ -60,9 +62,7 @@ jobs:
         with:
           releaseNameRegEx: 'iam'
           doNotFailIfNotFound: 'true'
-          repo: 'dBildungsplattform/helm-charts-registry/'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          repo: 'dBildungsplattform/helm-charts-registry'
       - name: Check getByReleaseNameRegEx step result
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
