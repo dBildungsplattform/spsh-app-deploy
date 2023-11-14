@@ -60,7 +60,7 @@ jobs:
         with:
           releaseNameRegEx: 'DBP-350'
           doNotFailIfNotFound: 'true'
-          repo: 'https://github.com/dBildungsplattform/helm-charts-registry/'
+          repo: 'github.com/dBildungsplattform/helm-charts-registry/'
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Check getByReleaseNameRegEx step result
