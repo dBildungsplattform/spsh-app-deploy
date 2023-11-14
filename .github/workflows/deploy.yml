@@ -73,8 +73,6 @@ jobs:
   
   # The workflow must contain at least one job with no dependencies
   deploy-successful:
-    needs:
-      - search-helm-charts
     runs-on: ubuntu-latest
     steps:
       - run: echo "deploy was successful"
