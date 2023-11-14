@@ -58,9 +58,9 @@ jobs:
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
-          releaseNameRegEx: 'DBP-350'
+          releaseNameRegEx: 'iam'
           doNotFailIfNotFound: 'true'
-          repo: 'github.com/dBildungsplattform/helm-charts-registry/'
+          repo: 'dBildungsplattform/helm-charts-registry/'
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Check getByReleaseNameRegEx step result
