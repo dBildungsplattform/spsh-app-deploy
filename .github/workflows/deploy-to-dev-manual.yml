@@ -17,7 +17,7 @@ jobs:
   create_branch_identifier:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
     with:
-      branch: ${{ github.event.inputs.branch }}
+      branch: ${{ github.event.inputs.namespace }}
 
   deploy:
     needs:
