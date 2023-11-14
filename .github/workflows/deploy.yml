@@ -60,7 +60,7 @@ jobs:
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
-          releaseNameRegEx: 'dbildungs-iam-0.0.0-${{ inputs.branch }'
+          releaseNameRegEx: dbildungs-iam-0.0.0-${{ inputs.branch }
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
       - name: Check getByReleaseNameRegEx step result
