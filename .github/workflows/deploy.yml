@@ -26,7 +26,8 @@ jobs:
   # Search for helm charts
 
   # Deploy Helmcharts
-
+  
+  # The workflow must contain at least one job with no dependencies
   deploy-successful:
     needs:
       - deploy

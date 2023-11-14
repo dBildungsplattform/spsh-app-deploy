@@ -29,3 +29,11 @@ jobs:
       user_name: spsh-bot
     secrets:
       DEV_KUBE_CONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+
+  # The workflow must contain at least one job with no dependencies
+  deploy-successful:
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "deploy workflow was successful" 
