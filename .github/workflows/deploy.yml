@@ -69,7 +69,7 @@ jobs:
           helm upgrade --install \
             ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
             dbildungs-iam \
-            --namespace ${{ inputs.namespace } \
+            --namespace ${{ inputs.namespace }} \
             --kubeconfig ${{ env.KUBECONFIG_FILE }}
 
 
