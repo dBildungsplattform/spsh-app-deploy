@@ -63,7 +63,7 @@ jobs:
       - name: Download Helm chart from release
         run: |
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
-          tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}
+          tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
 
       - name: Deploy Helm chart
         run: |
