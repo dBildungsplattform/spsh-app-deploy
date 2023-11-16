@@ -34,27 +34,12 @@ jobs:
   #       with:
   #         args: apply deployment.yaml
 
-  # deployment:
-  #   runs-on: 'ubuntu-latest'
-  #   steps:
-  #   - name: 'Deploy'
-  #     uses: 'deliverybot/helm@v1'
-  #     with:
-  #       release: 'nginx'
-  #       namespace:  ${{ inputs.branch }
-  #       chart: 'chartmuseum/app'
-  #       token: '${{ github.token }}'
-  #       repo: 'https://github.com/dBildungsplattform/helm-charts-registry/main/'
-  #       repo-alias: chartmuseum
-
-  #     env:
-  #       KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-
   # Search for helm charts          
   search-helm-charts:
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
+      KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
     steps:
       - name: Get releases by ticket name by releaseNameRegEx
         id: getByReleaseNameRegEx
@@ -63,18 +48,36 @@ jobs:
           releaseNameRegEx: 'dbildungs-iam-0.0.0-${{ inputs.branch }}'
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
+      # ToDo create Variable for tag_name and set it to latest from main branch if this does not exist 
       - name: Check getByReleaseNameRegEx step result
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
           echo ${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}
+      # Deploy Helmcharts
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.0.2'
+
+      - name: Download Helm chart from release
+        run: |
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
+          tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}
+
+      - name: Deploy Helm chart
+        run: |
+          helm upgrade --install \
+            ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
+            dbildungs-iam \
+            --namespace ${{ inputs.namespace } \
+            --kubeconfig ${{ secrets.DEV_KUBE_CONFIG }}
 
 
-  # Deploy Helmcharts
   
   # The workflow must contain at least one job with no dependencies
   deploy-successful:
     needs:
-      - search-helm-charts
+      - deployment
     runs-on: ubuntu-latest
     steps:
       - run: echo "deploy was successful"
