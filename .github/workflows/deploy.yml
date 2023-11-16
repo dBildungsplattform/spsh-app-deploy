@@ -15,7 +15,7 @@ on:
          default: spsh-bot
          type: string
     secrets:
-      DEV_KUBE_CONFIG:
+      SPSH_DEV_KUBECONFIG:
         required: true
 permissions:
   contents: read
@@ -39,7 +39,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
-      KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+      KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
       - name: Get releases by ticket name by releaseNameRegEx
         id: getByReleaseNameRegEx
@@ -70,7 +70,7 @@ jobs:
             ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
             dbildungs-iam \
             --namespace ${{ inputs.namespace } \
-            --kubeconfig ${{ secrets.DEV_KUBE_CONFIG }}
+            --kubeconfig ${{ env.KUBECONFIG_FILE }}
 
 
   
