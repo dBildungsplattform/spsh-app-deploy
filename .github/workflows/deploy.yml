@@ -35,12 +35,13 @@ jobs:
   #         args: apply deployment.yaml
 
   # Search for helm charts          
-  search-helm-charts:
+  deployment:
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
+      # TODO: Extract Project-Ticketnumber from Branch
       - name: Get releases by ticket name by releaseNameRegEx
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
