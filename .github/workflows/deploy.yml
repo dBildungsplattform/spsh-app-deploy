@@ -55,10 +55,14 @@ jobs:
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
           echo ${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}
       # Deploy Helmcharts
-      - name: Set up Helm
-        uses: azure/setup-helm@v1
+      - name: Set up kubectl and Helm
+        uses: azure/setup-kubectl@v1
         with:
-          version: 'v3.0.2'
+          kubeconfig: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+
+      - name: Create Kubernetes namespace
+        run: |
+          kubectl create namespace ${{ inputs.namespace }} || true
 
       - name: Download Helm chart from release
         run: |
