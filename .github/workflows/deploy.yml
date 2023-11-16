@@ -65,13 +65,18 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
           tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
 
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > kubeconfig
+          export KUBECONFIG=$(pwd)/kubeconfig
+
       - name: Deploy Helm chart
         run: |
           helm upgrade --install \
             ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
             dbildungs-iam \
             --namespace ${{ inputs.namespace }} \
-            --kubeconfig ${{ env.KUBECONFIG_FILE }}
+            --kubeconfig $(pwd)/kubeconfig
 
 
   
