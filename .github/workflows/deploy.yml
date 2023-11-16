@@ -60,19 +60,19 @@ jobs:
         with:
           kubeconfig: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > kubeconfig
+          export KUBECONFIG=$(pwd)/kubeconfig
+
       - name: Create Kubernetes namespace
         run: |
-          kubectl create namespace ${{ inputs.namespace }} || true
+          kubectl create namespace ${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig || true
 
       - name: Download Helm chart from release
         run: |
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
           tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
-
-      - name: Configure kubeconfig
-        run: |
-          echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > kubeconfig
-          export KUBECONFIG=$(pwd)/kubeconfig
 
       - name: Deploy Helm chart
         run: |
