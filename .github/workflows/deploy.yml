@@ -76,7 +76,8 @@ jobs:
             ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
             dbildungs-iam \
             --namespace ${{ inputs.namespace }} \
-            --kubeconfig $(pwd)/kubeconfig
+            --kubeconfig $(pwd)/kubeconfig \
+            --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
 
 
   
