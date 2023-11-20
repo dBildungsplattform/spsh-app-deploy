@@ -14,23 +14,23 @@ jobs:
         shell: bash
         id: extract_branch_meta
         run: |
-          regex='^([[:alpha:]]+?-[[:digit:]]+)'
           if [ "${{ github.event_name }}" == 'pull_request' ]; then
             echo "branch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
             echo "sha=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+            regex='^([[:alpha:]]+?-[[:digit:]]+)'
             [[ $branch =~ $regex ]]
-            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
             echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
             echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
             [[ $branch =~ $regex ]]
-            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           fi
 
-          # - name: Extract project-ticketnumber from branch
-          #   run: |
-          #     regex='^([[:alpha:]]+?-[[:digit:]]+)'
-          #     [[ $branch =~ $regex ]]
-          #     echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-          #     echo $TICKET_NR
+# - name: Extract project-ticketnumber from branch
+#   run: |
+#     regex='^([[:alpha:]]+?-[[:digit:]]+)'
+#     [[ $branch =~ $regex ]]
+#     echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+#     echo $TICKET_NR
     
