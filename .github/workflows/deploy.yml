@@ -74,7 +74,7 @@ jobs:
           repo: 'dBildungsplattform/helm-charts-registry'
       
       - name:  Exit if latest main helm-chart is not found 
-        if: steps.getMainByReleaseNameRegEx.outputs.tag_name == '' 
+        if: steps.getMainByReleaseNameRegEx.outputs.tag_name == '' && steps.getByReleaseNameRegEx.outputs.tag_name == ''
         run: |
           echo No dbildungs-iam-server Helm Chart is not found, exit 
           exit 1
