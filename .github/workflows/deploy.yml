@@ -20,40 +20,57 @@ on:
 permissions:
   contents: read
 
-jobs:
-  # Create Namespace
-  # create-namespace:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Trigger create namespace
-  #       uses: Consensys/kubernetes-action@master
-  #       env:
-  #         KUBE_CONFIG_DATA: ${{ secrets.DEV_KUBE_CONFIG }}
-  #       with:
-  #         args: apply deployment.yaml
-
-  # Search for helm charts          
+jobs:     
   deployment:
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
-      # TODO: Extract Project-Ticketnumber from Branch
-      - name: Get releases by ticket name by releaseNameRegEx
+      - name: Extract project-ticketnumber from branch
+        run: |
+          regex='^([[:alpha:]]+?-[[:digit:]]+)'
+          [[ ${{ inputs.branch }} =~ $regex ]]
+          echo "TICKET_NR=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          echo "$TICKET_NR" 
+
+      - name: Search dbildungs-iam-server and get Helm Chart release by ticket name with releaseNameRegEx action
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
-          releaseNameRegEx: 'dbildungs-iam-0.0.0-${{ inputs.branch }}'
+          releaseNameRegEx: 'dbildungs-iam-0.0.0-$TICKET_NR'
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
-      # ToDo create Variable for tag_name and set it to latest from main branch if this does not exist 
-      - name: Check getByReleaseNameRegEx step result
+
+      - name: Set Helm Chart tagname as variable for dbildungs-iam-server
+        if: steps.getByReleaseNameRegEx.outputs.tag_name != '' 
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
           echo ${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}
+          echo "dbildungs_iam__server_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
+
+      - name: Check if a Helm Chart was found for ticketnr, if not, take last from main
+        if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
+        id: getMainByReleaseNameRegEx
+        uses: cardinalby/git-get-release-action@1.2.4
+        with:
+          releaseNameRegEx: 'dbildungs-iam-0.0.1'
+          doNotFailIfNotFound: 'true'
+          repo: 'dBildungsplattform/helm-charts-registry'
+      
+      - name:  Exit if latest main helm-chart is not found 
+        if: steps.getMainByReleaseNameRegEx.outputs.tag_name == '' 
+        run: |
+          echo No dbildungs-iam-server Helm Chart is not found, exit 
+          exit 1
+
+      - name:  Set Helm Chart tagname as variable for dbildungs-iam-server, last from main
+        if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
+        run: |
+          echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" &&
+          echo ${{ toJSON(steps.getMainByReleaseNameRegEx.outputs.body) }}
+          echo "dbildungs_iam__server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
+
       # Deploy Helmcharts
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v1
@@ -71,24 +88,14 @@ jobs:
 
       - name: Download Helm chart from release
         run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}/${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
-          tar -zxvf ${{ steps.getByReleaseNameRegEx.outputs.tag_name }}.tgz
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam__server_tagname/$dbildungs_iam__server_tagname.tgz
+          tar -zxvf $dbildungs_iam__server_tagname.tgz
 
       - name: Deploy Helm chart
         run: |
           helm upgrade --install \
-            ${{ steps.getByReleaseNameRegEx.outputs.tag_name }} \
+            $dbildungs_iam__server_tagname \
             dbildungs-iam \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
-
-
-  
-  # The workflow must contain at least one job with no dependencies
-  deploy-successful:
-    needs:
-      - deployment
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "deploy was successful"

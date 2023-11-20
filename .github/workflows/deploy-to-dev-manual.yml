@@ -30,10 +30,9 @@ jobs:
     secrets:
       SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
-  # The workflow must contain at least one job with no dependencies
   deploy-successful:
     needs:
       - deploy
     runs-on: ubuntu-latest
     steps:
-      - run: echo "deploy workflow was successful" 
+      - run: echo "Deployment workflow was successful" 
