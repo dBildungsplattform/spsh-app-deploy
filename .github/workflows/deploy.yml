@@ -42,13 +42,6 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
-      # - name: Extract project-ticketnumber from branch
-      #   run: |
-      #     regex='^([[:alpha:]]+?-[[:digit:]]+)'
-      #     [[ ${{ inputs.branch }} =~ $regex ]]
-      #     echo "TICKET_NR=${BASH_REMATCH[1]}" >> $GITHUB_ENV
-      #     echo $TICKET_NR
-
       - name: Search dbildungs-iam-server and get Helm Chart release by ticket name with releaseNameRegEx action
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
@@ -62,7 +55,7 @@ jobs:
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
           echo ${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}
-          echo "dbildungs_iam__server_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
+          echo "dbildungs_iam_server_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
 
       - name: Check if a Helm Chart was found for ticketnr, if not, take last from main
         if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
@@ -84,15 +77,14 @@ jobs:
         run: |
           echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" &&
           echo ${{ toJSON(steps.getMainByReleaseNameRegEx.outputs.body) }}
-          echo "dbildungs_iam__server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
+          echo "dbildungs_iam_server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
 
-      # Deploy Helmcharts
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v1
         with:
           kubeconfig: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
-      - name: Configure kubeconfig
+      - name: Configure kubeconfig as tmp file
         run: |
           echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > kubeconfig
           export KUBECONFIG=$(pwd)/kubeconfig
@@ -101,15 +93,15 @@ jobs:
         run: |
           kubectl create namespace ${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig || true
 
-      - name: Download Helm chart from release
+      - name: Download dbildungs_iam_server Helm chart
         run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam__server_tagname/$dbildungs_iam__server_tagname.tgz
-          tar -zxvf $dbildungs_iam__server_tagname.tgz
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam_server_tagname/$dbildungs_iam_server_tagname.tgz
+          tar -zxvf $dbildungs_iam_server_tagname.tgz
 
-      - name: Deploy Helm chart
+      - name: Deploy dbildungs_iam_server Helm chart
         run: |
           helm upgrade --install \
-            $dbildungs_iam__server_tagname \
+            $dbildungs_iam_server_tagname \
             dbildungs-iam \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
