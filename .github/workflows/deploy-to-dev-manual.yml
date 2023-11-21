@@ -6,21 +6,21 @@ on:
      inputs:
       namespace:
         type: string
-        description: Kubernetes namespace of the deployment
+        description: Kubernetes namespace of the deployment, has to start with ticketnr, e.g. spsh-1234
         required: true
       dbildungs_iam_server_branch:
         required: true
-        description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        description: "dbildungs_iam_server Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
       dbildungs_iam_client_branch:
         required: true
-        description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        description: "dbildungs_iam_client Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
       dbildungs_iam_keycloak_branch:
         required: true
-        description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        description: "dbildungs_iam_keycloak Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
 

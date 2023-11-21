@@ -5,6 +5,7 @@ on:
     inputs:
       namespace:
         required: true
+        description: "Namespace has to start with ticketnr, e.g. spsh-1234"
         type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
@@ -17,6 +18,10 @@ jobs:
   delete-namespace:
     runs-on: ubuntu-latest
     steps:
+    - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234
+      run: | 
+        regex='^([[:alpha:]]+?-[[:digit:]]+)'
+        [[ ${{ inputs.namespace }} =~ $regex ]]
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
       with:

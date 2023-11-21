@@ -5,7 +5,7 @@ on:
      inputs:
       namespace:
         type: string
-        description: Kubernetes namespace to delete
+        description: Kubernetes namespace to delete, has to start with e.g. spsh-1234
         required: true
 
 jobs:
