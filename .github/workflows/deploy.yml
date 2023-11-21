@@ -79,9 +79,7 @@ jobs:
           echo "dbildungs_iam_server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
 
       - name: Set up kubectl and Helm
-        uses: azure/setup-kubectl@v1
-        with:
-          kubeconfig: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+        uses: azure/setup-kubectl@v3
 
       - name: Configure kubeconfig as tmp file
         run: |
