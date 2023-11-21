@@ -35,6 +35,10 @@ jobs:
       - name: Extract project-ticketnumber from branch
         id: extract_branch_ticket
         run: |
-          regex='^([[:alpha:]]+?-[[:digit:]]+)'
-          [[ ${{ steps.extract_branch_meta.outputs.branch }} =~ $regex ]]
-          echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+          if ${{ github.ref_name == 'main' }}; then
+            echo "ticket=main" >> $GITHUB_OUTPUT
+          else
+            regex='^([[:alpha:]]+?-[[:digit:]]+)'
+            [[ ${{ steps.extract_branch_meta.outputs.branch }} =~ $regex ]]
+            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+          fi

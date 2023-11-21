@@ -1,0 +1,32 @@
+name: Delete Kubernetes Namespace
+
+on:
+  workflow_call:
+    inputs:
+      namespace:
+        required: true
+        type: string
+    secrets:
+      SPSH_DEV_KUBECONFIG:
+        required: true
+permissions:
+  contents: read
+
+    
+jobs:
+  delete-namespace:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubeconfig: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+
+    - name: Configure kubeconfig as tmp file
+      run: |
+        echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > kubeconfig
+        export KUBECONFIG=$(pwd)/kubeconfig
+
+    - name: Delete Kubernetes namespace
+      run: |
+        kubectl delete namespace ${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig || true

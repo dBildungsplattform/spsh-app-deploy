@@ -1,0 +1,24 @@
+name: Delete dev namespace manually
+
+on:
+  workflow_dispatch:
+     inputs:
+      namespace:
+        type: string
+        description: Kubernetes namespace to delete
+        required: true
+
+jobs:
+  delete_namespace:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/delete-namespace.yml@main
+    with:
+      namespace: ${{ github.event.inputs.namespace }}
+    secrets:
+      SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+
+  deploy-successful:
+    needs:
+      - delete_namespace
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Delete of namespace" ${{ github.event.inputs.namespace }} "done" 

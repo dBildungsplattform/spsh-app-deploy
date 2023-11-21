@@ -43,6 +43,7 @@ jobs:
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
       - name: Search dbildungs-iam-server and get Helm Chart release by ticket name with releaseNameRegEx action
+        if: ${{ github.ref_name != 'main' }}
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
@@ -50,15 +51,14 @@ jobs:
           doNotFailIfNotFound: 'true'
           repo: 'dBildungsplattform/helm-charts-registry'
 
-      - name: Set Helm Chart tagname as variable for dbildungs-iam-server
-        if: steps.getByReleaseNameRegEx.outputs.tag_name != '' 
+      - name: Set Branch Helm Chart tagname as variable for dbildungs-iam-server
+        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name != '' && github.ref_name != 'main' }}
         run: |
-          echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" &&
-          echo ${{ toJSON(steps.getByReleaseNameRegEx.outputs.body) }}
+          echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}"
           echo "dbildungs_iam_server_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
 
-      - name: Check if a Helm Chart was found for ticketnr, if not, take last from main
-        if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
+      - name: Check if a Branch Helm Chart was found, if not, take last from main
+        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name == '' || github.ref_name == 'main'  }}
         id: getMainByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@1.2.4
         with:
@@ -75,8 +75,7 @@ jobs:
       - name:  Set Helm Chart tagname as variable for dbildungs-iam-server, last from main
         if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
         run: |
-          echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" &&
-          echo ${{ toJSON(steps.getMainByReleaseNameRegEx.outputs.body) }}
+          echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}"
           echo "dbildungs_iam_server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
 
       - name: Set up kubectl and Helm
