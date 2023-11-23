@@ -52,10 +52,19 @@ jobs:
       chart_name: "spsh-client"
       service_name: "dbildungs-iam-client"
 
+  # find_dbildungs_iam_keycloak_helm_chart_tag:
+  #   uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
+  #   with:
+  #     github_repository: "dBildungsplattform/helm-charts-registry"
+  #     branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
+  #     chart_name: "dbildungs-iam-keycloak"
+  #     service_name: "dbildungs-iam-keycloak"
+
   deployment:
     needs: 
       - find_dbildungs_iam_server_helm_chart_tag
       - find_dbildungs_iam_client_helm_chart_tag
+      #- find_dbildungs_iam_keycloak_helm_chart_tag
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -78,10 +87,15 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      - name: Download dbildungs_iam_server Helm chart
+      - name: Download dbildungs_iam_client Helm chart
         run: |
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+
+      # - name: Download dbildungs_iam_keycloak Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+      #     tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |
@@ -100,3 +114,11 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+
+      # - name: Deploy dbildungs_iam_keycloak Helm chart
+      #   run: |
+      #     helm upgrade --install \
+      #       dbildungs-iam-keycloak \
+      #       dbildungs-iam-keycloak \
+      #       --namespace ${{ inputs.namespace }} \
+      #       --kubeconfig $(pwd)/kubeconfig
