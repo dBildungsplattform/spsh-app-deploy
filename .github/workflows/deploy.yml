@@ -35,25 +35,23 @@ on:
 permissions:
   contents: read
 
-jobs:     
+jobs:
+  find_dbildungs_iam_server_helm_chart_tag:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
+    with:
+      github_repository: "dBildungsplattform/helm-charts-registry"
+      branch: ${{ inputs.dbildungs_iam_server_branch }}
+      chart_name: "dbildungs-iam"
+      service_name: "dbildungs-iam-server"
+
   deployment:
+    needs: 
+      - find_dbildungs_iam_server_helm_chart_tag
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
-      # Search for dbildungs-iam-server Helm Chart
-      - name: Search dbildungs-iam-server  Helm Chart release by ticket name
-        id: get_dbildungs_iam_server_helm_chart_tag
-        uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
-        with:
-          github_repository: "dBildungsplattform/helm-charts-registry"
-          branch: ${{ inputs.dbildungs_iam_server_branch }}
-          chart_name: "dbildungs-iam"
-          service_name: "dbildungs-iam-server"
-
-      # Search for dbildungs-iam-cleint Helm Chart
-
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v3
 
@@ -68,8 +66,8 @@ jobs:
 
       - name: Download dbildungs_iam_server Helm chart
         run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam_server_tagname/$dbildungs_iam_server_tagname.tgz
-          tar -zxvf $dbildungs_iam_server_tagname.tgz
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+          tar -zxvf ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
       # - name: Download dbildungs_iam_client Helm chart
       #   run: |
