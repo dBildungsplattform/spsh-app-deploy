@@ -42,41 +42,17 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
-      - name: Search dbildungs-iam-server and get Helm Chart release by ticket name with releaseNameRegEx action
-        if: ${{ github.ref_name != 'main' }}
-        id: getByReleaseNameRegEx
-        uses: cardinalby/git-get-release-action@1.2.4
+      # Search for dbildungs-iam-server Helm Chart
+      - name: Search dbildungs-iam-server  Helm Chart release by ticket name
+        id: get_dbildungs_iam_server_helm_chart_tag
+        uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
         with:
-          releaseNameRegEx: "dbildungs-iam-0.0.0-${{ inputs.dbildungs_iam_server_branch }}"
-          doNotFailIfNotFound: 'true'
-          repo: 'dBildungsplattform/helm-charts-registry'
+          github_repository: "dBildungsplattform/helm-charts-registry"
+          branch: ${{ inputs.dbildungs_iam_server_branch }}
+          chart_name: "dbildungs-iam"
+          service_name: "dbildungs-iam-server"
 
-      - name: Set Branch Helm Chart tagname as variable for dbildungs-iam-server
-        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name != '' && github.ref_name != 'main' }}
-        run: |
-          echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}"
-          echo "dbildungs_iam_server_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
-
-      - name: Check if a Branch Helm Chart was found, if not, take last from main
-        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name == '' || github.ref_name == 'main'  }}
-        id: getMainByReleaseNameRegEx
-        uses: cardinalby/git-get-release-action@1.2.4
-        with:
-          releaseNameRegEx: 'dbildungs-iam-0.0.1'
-          doNotFailIfNotFound: 'true'
-          repo: 'dBildungsplattform/helm-charts-registry'
-      
-      - name:  Exit if latest main helm-chart is not found 
-        if: steps.getMainByReleaseNameRegEx.outputs.tag_name == '' && steps.getByReleaseNameRegEx.outputs.tag_name == ''
-        run: |
-          echo No dbildungs-iam-server Helm Chart is not found, exit 
-          exit 1
-
-      - name:  Set Helm Chart tagname as variable for dbildungs-iam-server, last from main
-        if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
-        run: |
-          echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}"
-          echo "dbildungs_iam_server_tagname=${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
+      # Search for dbildungs-iam-cleint Helm Chart
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v3
@@ -94,6 +70,20 @@ jobs:
         run: |
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam_server_tagname/$dbildungs_iam_server_tagname.tgz
           tar -zxvf $dbildungs_iam_server_tagname.tgz
+
+      # - name: Download dbildungs_iam_client Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam_client_tagname/$dbildungs_iam_client_tagname.tgz
+      #     tar -zxvf $dbildungs_iam_client_tagname.tgz
+
+      # - name: Deploy dbildungs_iam_client Helm chart
+      #   run: |
+      #     helm upgrade --install \
+      #       dbildungs-iam-client \
+      #       dbildungs-iam-client \
+      #       --namespace ${{ inputs.namespace }} \
+      #       --kubeconfig $(pwd)/kubeconfig \
+      #       --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
 
       - name: Deploy dbildungs_iam_server Helm chart
         run: |
