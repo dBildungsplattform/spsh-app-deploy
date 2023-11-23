@@ -44,9 +44,18 @@ jobs:
       chart_name: "dbildungs-iam"
       service_name: "dbildungs-iam-server"
 
+  find_dbildungs_iam_client_helm_chart_tag:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
+    with:
+      github_repository: "dBildungsplattform/helm-charts-registry"
+      branch: ${{ inputs.dbildungs_iam_client_branch }}
+      chart_name: "spsh-client"
+      service_name: "dbildungs-iam-client"
+
   deployment:
     needs: 
       - find_dbildungs_iam_server_helm_chart_tag
+      - find_dbildungs_iam_client_helm_chart_tag
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -69,19 +78,19 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      # - name: Download dbildungs_iam_client Helm chart
-      #   run: |
-      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/$dbildungs_iam_client_tagname/$dbildungs_iam_client_tagname.tgz
-      #     tar -zxvf $dbildungs_iam_client_tagname.tgz
+      - name: Download dbildungs_iam_server Helm chart
+        run: |
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+          tar -zxvf ${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      # - name: Deploy dbildungs_iam_client Helm chart
-      #   run: |
-      #     helm upgrade --install \
-      #       dbildungs-iam-client \
-      #       dbildungs-iam-client \
-      #       --namespace ${{ inputs.namespace }} \
-      #       --kubeconfig $(pwd)/kubeconfig \
-      #       --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+      - name: Deploy dbildungs_iam_client Helm chart
+        run: |
+          helm upgrade --install \
+            spsh-client \
+            spsh-client \
+            --namespace ${{ inputs.namespace }} \
+            --kubeconfig $(pwd)/kubeconfig \
+            --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
 
       - name: Deploy dbildungs_iam_server Helm chart
         run: |
