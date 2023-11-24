@@ -52,19 +52,23 @@ jobs:
       chart_name: "spsh-client"
       service_name: "dbildungs-iam-client"
 
-  # find_dbildungs_iam_keycloak_helm_chart_tag:
-  #   uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
-  #   with:
-  #     github_repository: "dBildungsplattform/helm-charts-registry"
-  #     branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
-  #     chart_name: "dbildungs-iam-keycloak"
-  #     service_name: "dbildungs-iam-keycloak"
+  find_dbildungs_iam_keycloak_helm_chart_tag:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@main
+    with:
+      github_repository: "dBildungsplattform/helm-charts-registry"
+      branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
+      chart_name: "dbildungscloud-iam-keycloak"
+      service_name: "dbildungs-iam-keycloak"
+
+  create_ingress_prefix:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@main
 
   deployment:
     needs: 
       - find_dbildungs_iam_server_helm_chart_tag
       - find_dbildungs_iam_client_helm_chart_tag
-      #- find_dbildungs_iam_keycloak_helm_chart_tag
+      - find_dbildungs_iam_keycloak_helm_chart_tag
+      - create_ingress_prefix
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -92,10 +96,10 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      # - name: Download dbildungs_iam_keycloak Helm chart
-      #   run: |
-      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
-      #     tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+      - name: Download dbildungs_iam_keycloak Helm chart
+        run: |
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+          tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |
@@ -104,7 +108,7 @@ jobs:
             spsh-client \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
-            --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+            --set frontendHostname=${{ needs.create_ingress_prefix.outputs.ticket }}.dev.spsh.dbildungsplattform.de
 
       - name: Deploy dbildungs_iam_server Helm chart
         run: |
@@ -113,12 +117,13 @@ jobs:
             dbildungs-iam \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
-            --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+            --set backendHostname=${{ needs.create_ingress_prefix.outputs.ticket }}.dev.spsh.dbildungsplattform.de
 
-      # - name: Deploy dbildungs_iam_keycloak Helm chart
-      #   run: |
-      #     helm upgrade --install \
-      #       dbildungs-iam-keycloak \
-      #       dbildungs-iam-keycloak \
-      #       --namespace ${{ inputs.namespace }} \
-      #       --kubeconfig $(pwd)/kubeconfig
+      - name: Deploy dbildungs_iam_keycloak Helm chart
+        run: |
+          helm upgrade --install \
+            dbildungscloud-iam-keycloak \
+            dbildungscloud-iam-keycloak \
+            --namespace ${{ inputs.namespace }} \
+            --kubeconfig $(pwd)/kubeconfig
+            --set keycloakHostname=${{ needs.create_ingress_prefix.outputs.ticket }}keycloak.dev.spsh.dbildungsplattform.de
