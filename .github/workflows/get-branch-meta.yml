@@ -40,5 +40,5 @@ jobs:
           else
             regex='^([[:alpha:]]+?-[[:digit:]]+)'
             [[ ${{ steps.extract_branch_meta.outputs.branch }} =~ $regex ]]
-            echo "ticket=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            echo "ticket=$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])" >> $GITHUB_OUTPUT
           fi
