@@ -57,7 +57,7 @@ jobs:
         with:
           releaseNameRegEx: "${{ inputs.chart_name }}-0.0.1"
           doNotFailIfNotFound: 'true'
-          searchLimit: 1000
+          searchLimit: 100000
           repo: "${{ inputs.github_repository }}"
       
       - name:  Exit if latest main helm-chart is not found 
