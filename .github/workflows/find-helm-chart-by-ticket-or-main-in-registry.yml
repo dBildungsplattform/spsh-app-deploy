@@ -40,6 +40,7 @@ jobs:
         uses: cardinalby/git-get-release-action@1.2.4
         with:
           releaseNameRegEx: "${{ inputs.chart_name }}-0.0.0-${{ inputs.branch }}"
+          searchLimit: 1000
           doNotFailIfNotFound: 'true'
           repo: "${{ inputs.github_repository }}"
     
@@ -56,6 +57,7 @@ jobs:
         with:
           releaseNameRegEx: "${{ inputs.chart_name }}-0.0.1"
           doNotFailIfNotFound: 'true'
+          searchLimit: 100000
           repo: "${{ inputs.github_repository }}"
       
       - name:  Exit if latest main helm-chart is not found 
