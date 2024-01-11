@@ -108,6 +108,8 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
+      # On branches the ticket number is used as image tag. To ensure the pods are restarted
+      # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
       - name: Uninstall dbildungs_iam_client Helm chart (dev branch)
         if: ${{ inputs.dbildungs_iam_client_branch != 'main' }}
         run: |
