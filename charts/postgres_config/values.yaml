@@ -1,0 +1,15 @@
+psql:
+  imageTag: 4.0.3
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+    requests:
+      cpu: "100m"
+      memory: "1Gi"
+configMap:
+  defaultMode: 457
+database:
+  name: ""
+instance:
+name: "psql-db-spsh-default-job" 
