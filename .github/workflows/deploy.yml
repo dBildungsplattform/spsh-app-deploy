@@ -83,6 +83,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
+        with:
+          ref: 'DBP-563-Create-and-deploy-instance-secrets-automatically'
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v3
