@@ -144,9 +144,10 @@ jobs:
         run: |
           pwd
 
-      - name: Echo files
+      - name: List Files
         run: |
-          ls
+          ls -al > file_list.txt
+          cat file_list.txt
       
       - name: Create dbildungs-iam-secret secret
         run: |
