@@ -140,6 +140,14 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
 
+      - name: Echo pwd
+        run: |
+          pwd
+
+      - name: Echo files
+        run: |
+          ls
+      
       - name: Create dbildungs-iam-secret secret
         run: |
           kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./dbildungs-iam-secrets-secret-dev.yaml
