@@ -1,5 +1,5 @@
 psql:
-  imageTag: 4.0.3
+  imageTag: 4.0.3 # For the latest version of infra-tools, refer to the infra-tools repository: https://github.com/hpi-schul-cloud/infra-tools/tree/master/infra-tools
   resources:
     limits:
       cpu: "1000m"
@@ -10,6 +10,7 @@ psql:
 configMap:
   defaultMode: 457
 database:
-  name: ""
+  name: "" # Set a default value
 instance:
-name: "psql-db-spsh-default-job" 
+name: "psql-db-spsh-default-job" # The 'instance.name' variable is dynamically set in the CI/CD pipeline
+

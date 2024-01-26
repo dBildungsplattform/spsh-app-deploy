@@ -136,6 +136,22 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
+      
+      - name: Deploy postgres_config Helm chart
+        run: |
+          if [ "${{ github.head_ref }}" = "inputs.dbildungs_iam_keycloak_branch" ]; then
+              INSTANCE_NAME="psql-db-spsh-1234-database-keycloak" 
+          else
+              INSTANCE_NAME="psql-db-spsh-1234-database"
+          fi
+
+          helm upgrade --install \
+              postgres_config \
+              postgres_config \ # ?? postgres_config chart is not known?
+              --set instance.name=$INSTANCE_NAME 
+              --set database.name= "" # Set DB_Name
+
+
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |
