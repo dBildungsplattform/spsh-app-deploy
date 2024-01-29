@@ -150,10 +150,13 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./keycloak-secret-dev.yaml
 
-      - name: Create postgres_config secret
+      - name: Create secret for PostgreSQL Schulportal user passwords
         run: |
-          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./keycloak-secret-dev.yaml
+          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./pg-cluster-schulportal-passwords-secret-dev.yaml
 
+      - name: Create secret for PostgreSQL Schulportal main configuration
+        run: |
+          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./pg-cluster-schulportal-secret-dev.yaml
 
       - name: Deploy postgres_config Helm chart for Keycloak and SPSH-App
         run: |
