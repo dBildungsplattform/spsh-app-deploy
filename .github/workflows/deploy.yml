@@ -141,22 +141,6 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
-      
-      - name: Deploy postgres_config Helm chart
-        run: |
-          if [ "${{ github.head_ref }}" = "inputs.dbildungs_iam_keycloak_branch" ]; then
-              INSTANCE_NAME="psql-db-spsh-1234-database-keycloak" 
-          else
-              INSTANCE_NAME="psql-db-spsh-1234-database"
-          fi
-
-          helm upgrade --install \
-              postgres_config \
-              postgres_config \ # ?? postgres_config chart is not known?
-              --set instance.name=$INSTANCE_NAME 
-              --set database.name= "" # Set DB_Name
-
-
 
       - name: Create dbildungs-iam-secret secret
         run: |
@@ -165,6 +149,40 @@ jobs:
       - name: Create keycloak secret
         run: |
           kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./keycloak-secret-dev.yaml
+
+      - name: Create postgres_config secret
+        run: |
+          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./keycloak-secret-dev.yaml
+
+
+      - name: Deploy postgres_config Helm chart for Keycloak and SPSH-App
+        run: |
+          # Generate timestamp for job name uniqueness
+          DATE=$(date +%Y%m%d%H%M%S)
+
+          # Define job and database names for Keycloak
+          HELM_KEYCLOAK_JOB_NAME="psql-db-${DATE}-keycloak"
+          HELM_KEYCLOAK_DATABASE_NAME="spsh-${{ github.head_ref }}-keycloak"
+
+          # Define job and database names for SPSH-App
+          HELM_SPSH_JOB_NAME="psql-db-${DATE}-database"
+          HELM_SPSH_DATABASE_NAME="spsh-${{ github.head_ref }}-database"
+
+          # Deploy Database for Keycloak
+          helm upgrade --install \
+            $HELM_KEYCLOAK_JOB_NAME \
+            Charts/postgres_config \
+            --namespace=psql-config \
+            --set job.name=$HELM_KEYCLOAK_JOB_NAME \
+            --set database.name=$HELM_KEYCLOAK_DATABASE_NAME
+
+          # Deploy Database for SPSH-App
+          helm upgrade --install \
+            $HELM_SPSH_JOB_NAME \
+            Charts/postgres_config \
+            --namespace=psql-config \
+            --set job.name=$HELM_SPSH_JOB_NAME \
+            --set database.name=$HELM_SPSH_DATABASE_NAME
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |

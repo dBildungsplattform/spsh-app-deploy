@@ -11,6 +11,6 @@ configMap:
   defaultMode: 457
 database:
   name: "" # Set a default value
-instance:
-name: "psql-db-spsh-default-job" # The 'instance.name' variable is dynamically set in the CI/CD pipeline
+job:
+name: "psql-db-spsh-default-job" # The 'job.name' variable is dynamically set in the CI/CD pipeline
 
