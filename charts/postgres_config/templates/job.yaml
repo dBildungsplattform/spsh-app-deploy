@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Values.job.name }}-database-setup
-  namespace: psql-config  
+  namespace: {{ .Values.psql_namespace }}
 spec:
   template:
     spec:
