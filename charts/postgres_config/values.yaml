@@ -11,6 +11,6 @@ psql:
 configMap:
   defaultMode: 457
 database:
-  name: "" # Set a default value
+  name: ""
 job:
-name: "psql-db-spsh-0000000000000-job" # The 'job.name' variable is dynamically set in the CI/CD pipeline
+  name: "psql-db-DATE-DATABASE" 
