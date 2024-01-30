@@ -79,20 +79,18 @@ jobs:
         shell: bash
         run: |
           # keycloak db name creation at a single point
-          keycloak_db_name="spsh-${{ inputs.namespace }}-keycloak"
-          echo "keycloak_db_name=$keycloak_db_name" >> $GITHUB_OUTPUT
+          echo "keycloak_db_name=spsh-${{ inputs.namespace }}-keycloak" >> $GITHUB_OUTPUT
 
-  create_spsh-app_db_name:
+  create_spsh_app_db_name:
     runs-on: ubuntu-latest
     outputs:
-      spsh-app_db_name: ${{ steps.create_spsh-app_db_name.outputs.spsh-app_db_name }}
+      spsh_app_db_name: ${{ steps.create_spsh_app_db_name.outputs.spsh_app_db_name }}
     steps:
-      - id: create_spsh-app_db_name
+      - id: create_spsh_app_db_name
         shell: bash
         run: |
           # spsh-app db name creation at a single point
-          spsh-app_db_name="spsh-${{ inputs.namespace }}-database"
-          echo "spsh-app_db_name=$spsh-app_db_name" >> $GITHUB_OUTPUT
+          echo "spsh_app_db_name=spsh-${{ inputs.namespace }}-database" >> $GITHUB_OUTPUT
 
   deployment:
     needs: 
@@ -101,7 +99,7 @@ jobs:
       - find_dbildungs_iam_keycloak_helm_chart_tag
       - create_lowercase_ingress_prefix
       - create_keycloak_db_name
-      - create_spsh-app_db_name
+      - create_spsh_app_db_name
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -206,7 +204,7 @@ jobs:
             Charts/postgres_config \
             --set job.name=$HELM_SPSH_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
-            --set database.name=${{ needs.create_spsh-app_db_name.outputs.spsh-app_db_name }}
+            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |
@@ -226,7 +224,7 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de
-            --set db.name=${{ needs.create_spsh-app_db_name.outputs.spsh-app_db_name }}
+            --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
 
       - name: Deploy dbildungs_iam_keycloak Helm chart
         run: |
