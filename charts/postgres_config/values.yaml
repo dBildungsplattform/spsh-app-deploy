@@ -12,5 +12,18 @@ configMap:
 database:
   name: "" # Set a default value
 job:
-name: "psql-db-spsh-default-job" # The 'job.name' variable is dynamically set in the CI/CD pipeline
+name: "psql-db-spsh-0000000000000-job" # The 'job.name' variable is dynamically set in the CI/CD pipeline
 
+psql_db_custom_command: "" # Custom DB command executed after configuration of db and users
+psql_user: postgres        # Initial/Admin user
+psql_name: ""              # Used for naming ConfigMap, Secret and Job (Typically set to the DB name)
+psql_default_privileges: "ALL PRIVILEGES" # Privileges used if not provided for a user
+psql_db_owner: ""          # Owner of the created DB (placeholder for name of user)
+psql_host: ""              # Host of DB
+psql_pass: ""              # Password for Initial/Admin user
+psql_db_name: ""           # Name of the DB
+psql_db_users: []          # List of users to create
+    # Example of how to define a user:
+    # - name: example_user
+    #   password: example_password
+    #   privileges: "CONNECT" # or "ALL PRIVILEGES"

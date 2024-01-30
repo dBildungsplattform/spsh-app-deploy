@@ -150,13 +150,6 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./keycloak-secret-dev.yaml
 
-      - name: Create secret for PostgreSQL Schulportal user passwords
-        run: |
-          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./pg-cluster-schulportal-passwords-secret-dev.yaml
-
-      - name: Create secret for PostgreSQL Schulportal main configuration
-        run: |
-          kubectl --namespace=psql-config --kubeconfig $(pwd)/kubeconfig apply -f ./pg-cluster-schulportal-secret-dev.yaml
 
       - name: Deploy postgres_config Helm chart for Keycloak and SPSH-App
         run: |
@@ -175,16 +168,16 @@ jobs:
           helm upgrade --install \
             $HELM_KEYCLOAK_JOB_NAME \
             Charts/postgres_config \
-            --namespace=psql-config \
             --set job.name=$HELM_KEYCLOAK_JOB_NAME \
+            --kubeconfig $(pwd)/kubeconfig \
             --set database.name=$HELM_KEYCLOAK_DATABASE_NAME
 
           # Deploy Database for SPSH-App
           helm upgrade --install \
             $HELM_SPSH_JOB_NAME \
             Charts/postgres_config \
-            --namespace=psql-config \
             --set job.name=$HELM_SPSH_JOB_NAME \
+            --kubeconfig $(pwd)/kubeconfig \
             --set database.name=$HELM_SPSH_DATABASE_NAME
 
       - name: Deploy dbildungs_iam_client Helm chart
