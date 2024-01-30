@@ -79,7 +79,7 @@ jobs:
         shell: bash
         run: |
           # keycloak db name creation at a single point
-          keycloak_db_name="spsh-${{ inputs.namespace }}-keycloak""
+          keycloak_db_name="spsh-${{ inputs.namespace }}-keycloak"
           echo "keycloak_db_name=$keycloak_db_name" >> $GITHUB_OUTPUT
 
   create_spsh-app_db_name:
@@ -91,7 +91,7 @@ jobs:
         shell: bash
         run: |
           # spsh-app db name creation at a single point
-          spsh-app_db_name="spsh-${{ inputs.namespace }}-database""
+          spsh-app_db_name="spsh-${{ inputs.namespace }}-database"
           echo "spsh-app_db_name=$spsh-app_db_name" >> $GITHUB_OUTPUT
 
   deployment:
