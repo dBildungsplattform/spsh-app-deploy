@@ -79,7 +79,10 @@ jobs:
         shell: bash
         run: |
           # keycloak db name creation at a single point
-          echo "keycloak_db_name=spsh-${{ inputs.namespace }}-keycloak" >> $GITHUB_OUTPUT
+          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore for postgresql db name
+          temp=$(echo "spsh_${{ inputs.namespace }}_keycloak" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g')
+          echo "before" ${{ inputs.namespace }} "after" $temp
+          echo "keycloak_db_name=$temp" >> $GITHUB_OUTPUT
 
   create_spsh_app_db_name:
     runs-on: ubuntu-latest
@@ -90,7 +93,10 @@ jobs:
         shell: bash
         run: |
           # spsh-app db name creation at a single point
-          echo "spsh_app_db_name=spsh-${{ inputs.namespace }}-database" >> $GITHUB_OUTPUT
+          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore for postgresql db name
+          temp=$(echo "spsh_${{ inputs.namespace }}_database" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g')
+          echo "before" ${{ inputs.namespace }} "after" $temp
+          echo "spsh_app_db_name=$temp" >> $GITHUB_OUTPUT
 
   deployment:
     needs: 
