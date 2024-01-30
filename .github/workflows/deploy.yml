@@ -109,6 +109,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
+          ref: 'dbp-554-Automate-Database-Creation-for-Each-Dev-Branch-in-Pg-Cluster' # TODO: delete this line before merge to main
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@v3
