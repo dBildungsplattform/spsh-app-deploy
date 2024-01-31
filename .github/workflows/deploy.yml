@@ -212,7 +212,7 @@ jobs:
             --set job.name=$HELM_SPSH_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
-            --namespace psql-config
+            --name
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |

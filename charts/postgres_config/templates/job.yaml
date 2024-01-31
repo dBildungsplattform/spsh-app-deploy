@@ -9,7 +9,7 @@ spec:
       containers:
       - name: db-setup
         image: schulcloud/infra-tools:{{ .Values.psql.imageTag }}
-        command: ["/bin/bash", "-c", "/scripts/config-script.sh"]
+        command: ["/bin/bash", "-c", "/scripts/config-script"]
         resources: {{ toYaml .Values.psql.resources | nindent 12 }}
         volumeMounts:
         - name: config-script-volume
