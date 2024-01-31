@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.job.name }}-database-setup
+  name: {{ .Values.job.name }}
   namespace: {{ .Values.psql_namespace }}
 spec:
   template:
@@ -16,7 +16,7 @@ spec:
           mountPath: /scripts
         envFrom:
         - secretRef:
-            name: psql-config-secret  
+            name: {{ .Values.existingSecret }}  
         env:
         - name: DB_NAME
           value: {{ .Values.database.name }}  
