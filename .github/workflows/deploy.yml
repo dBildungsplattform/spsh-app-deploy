@@ -207,7 +207,7 @@ jobs:
 
           # Deploy Database for SPSH-App 
           helm upgrade --install \
-            $HELM_KEYCLOAK_JOB_NAME \
+            $HELM_SPSH_JOB_NAME \
             ./charts/postgres_config \
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
