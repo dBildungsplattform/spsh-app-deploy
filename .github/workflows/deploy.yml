@@ -191,7 +191,7 @@ jobs:
 
           # Deploy Database for Keycloak
           helm upgrade --install \
-            db-job-keycloak \
+            db-creation-job \
             ./charts/postgres_config \
             --set job.name=$HELM_KEYCLOAK_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
@@ -207,7 +207,7 @@ jobs:
 
           # Deploy Database for SPSH-App 
           helm upgrade --install \
-            db-job-spsh-app \
+            db-creation-job \
             ./charts/postgres_config \
             --set job.name=$HELM_SPSH_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
