@@ -160,7 +160,7 @@ jobs:
         run: |
           helm uninstall \
             dbildungs-iam \
-            --namespace ${{ inputs.namespace }} \
+            --namespace psql-config \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
 
@@ -169,6 +169,7 @@ jobs:
         run: |
           helm uninstall \
             dbildungscloud-iam-keycloak \
+            --namespace psql-config \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
@@ -193,6 +194,7 @@ jobs:
           helm upgrade --install \
             $HELM_KEYCLOAK_JOB_NAME \
             ./charts/postgres_config \
+            --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
