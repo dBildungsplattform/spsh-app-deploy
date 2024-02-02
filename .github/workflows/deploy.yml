@@ -195,6 +195,7 @@ jobs:
             --set job.name=$HELM_KEYCLOAK_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
+            --namespace psql-config
 
       - name: Create Database for SPSH-App
         run: |
@@ -204,13 +205,14 @@ jobs:
           # Define job name for SPSH-App database creation job
           HELM_SPSH_JOB_NAME="psql-db-${DATE}-database"
 
-          # Deploy Database for SPSH-App
+          # Deploy Database for SPSH-App 
           helm upgrade --install \
             $HELM_SPSH_JOB_NAME \
             ./charts/postgres_config \
             --set job.name=$HELM_SPSH_JOB_NAME \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+            --namespace psql-config
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |

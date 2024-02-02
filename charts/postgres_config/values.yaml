@@ -14,3 +14,6 @@ database:
   name: ""
 job:
   name: "psql-db-DATE-DATABASE" 
+# existingSecret: Verweist auf ein bereits im psql-config vorhandenes Secret, das für die Authentifizierung und Konfiguration
+# der Datenbank-Setup-Aufgaben benötigt wird. Diese Secrets werden über OnePasswordItems definiert und im Kubernetes-Cluster bereitgestellt.
+existingSecret: "psql-config-secret"
