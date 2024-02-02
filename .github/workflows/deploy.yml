@@ -191,9 +191,9 @@ jobs:
 
           # Deploy Database for Keycloak
           helm upgrade --install \
-            db-creation-job \
+            $HELM_KEYCLOAK_JOB_NAME \
             ./charts/postgres_config \
-            --set job.name=$HELM_KEYCLOAK_JOB_NAME \
+            --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
 
@@ -207,9 +207,9 @@ jobs:
 
           # Deploy Database for SPSH-App 
           helm upgrade --install \
-            db-creation-job \
+            $HELM_KEYCLOAK_JOB_NAME \
             ./charts/postgres_config \
-            --set job.name=$HELM_SPSH_JOB_NAME \
+            --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
 

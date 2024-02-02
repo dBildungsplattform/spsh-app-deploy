@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.job.name }}
+  name: {{ .Release.Name }}
   namespace: {{ .Values.psql_namespace }}
 spec:
   template:
@@ -15,14 +15,20 @@ spec:
         - name: config-script-volume
           mountPath: /scripts
         envFrom:
+        {{- if .Values.auth.existingSecret }}
         - secretRef:
-            name: {{ .Values.auth.existingSecret }}  
+            name: {{ .Values.auth.existingSecret }}
+        {{- end }}
+        {{- if not .Values.auth.existingSecret }}
+        - secretRef:
+            name: {{ .Release.Name }}
+        {{- end }}
         env:
         - name: DB_NAME
-          value: {{ .Values.database.name }}  
+          value: {{ .Values.database.name }}
       volumes:
       - name: config-script-volume
         configMap:
-          name: psql-config-script
+          name: {{ .Release.Name }}
           defaultMode: 457
       restartPolicy: Never

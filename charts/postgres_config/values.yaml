@@ -12,11 +12,9 @@ configMap:
   defaultMode: 457
 database:
   name: ""
-job:
-  name: "psql-db-DATE-DATABASE" 
 auth:
   # existingSecret: Refers to a secret already present in the cluster, which is required for the authentication and configuration of the database setup tasks.
-  existingSecret: "psql-config-secret"
+  existingSecret: ""
   psql_user_pass: ""
   psql_host: ""
   psql_pass: ""
