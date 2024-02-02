@@ -186,7 +186,7 @@ jobs:
           DATE=$(date +%Y%m%d%H%M%S)
 
           # Define job name for Keycloak database creation job
-          HELM_KEYCLOAK_JOB_NAME="psql-db-${DATE}-keycloak"
+          HELM_KEYCLOAK_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
           # Deploy Database for Keycloak
           helm upgrade --install \
@@ -203,7 +203,7 @@ jobs:
           DATE=$(date +%Y%m%d%H%M%S)
 
           # Define job name for SPSH-App database creation job
-          HELM_SPSH_JOB_NAME="psql-db-${DATE}-database"
+          HELM_SPSH_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
           # Deploy Database for SPSH-App 
           helm upgrade --install \
