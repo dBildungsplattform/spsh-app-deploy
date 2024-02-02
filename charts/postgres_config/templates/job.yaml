@@ -16,7 +16,7 @@ spec:
           mountPath: /scripts
         envFrom:
         - secretRef:
-            name: {{ .Values.existingSecret }}  
+            name: {{ .Values.auth.existingSecret }}  
         env:
         - name: DB_NAME
           value: {{ .Values.database.name }}  
