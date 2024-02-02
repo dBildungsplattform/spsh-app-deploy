@@ -160,7 +160,7 @@ jobs:
         run: |
           helm uninstall \
             dbildungs-iam \
-            --namespace psql-config \
+            --namespace="psql-config" \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
 
@@ -169,7 +169,7 @@ jobs:
         run: |
           helm uninstall \
             dbildungscloud-iam-keycloak \
-            --namespace psql-config \
+            --namespace="psql-config" \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --ignore-not-found
