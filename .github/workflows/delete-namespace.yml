@@ -33,4 +33,4 @@ jobs:
 
     - name: Delete Kubernetes namespace
       run: |
-        kubectl delete namespace ${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig || true
+        kubectl delete namespace ${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig
