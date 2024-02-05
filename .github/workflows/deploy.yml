@@ -143,14 +143,11 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      - name: Test- list all helm ressources
+      # On branches the ticket number is used as image tag. To ensure the pods are restarted
+      # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
+      # We also need to uninstall all pods to savely recreate the database
+      - name: Uninstall all helm-charts in the namespace
         run: |
-          echo "Deleting this helm releases:"
-          helm ls \
-            --namespace ${{ inputs.namespace }} \
-            --kubeconfig $(pwd)/kubeconfig  \
-            --short
-
           helm uninstall \
             $(helm ls \
               --namespace ${{ inputs.namespace }} \
@@ -158,32 +155,6 @@ jobs:
               --short) \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig
-
-      # On branches the ticket number is used as image tag. To ensure the pods are restarted
-      # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
-      # - name: Uninstall dbildungs_iam_client Helm chart (dev branch)
-      #   run: |
-      #     helm uninstall \
-      #       spsh-client \
-      #       --namespace ${{ inputs.namespace }} \
-      #       --kubeconfig $(pwd)/kubeconfig \
-      #       --ignore-not-found
-
-      # - name: Uninstall dbildungs_iam_server Helm chart (dev branch)
-      #   run: |
-      #     helm uninstall \
-      #       dbildungs-iam \
-      #       --namespace ${{ inputs.namespace }} \
-      #       --kubeconfig $(pwd)/kubeconfig \
-      #       --ignore-not-found
-
-      # - name: Uninstall dbildungs_iam_keycloak Helm chart (dev branch)
-      #   run: |
-      #     helm uninstall \
-      #       dbildungscloud-iam-keycloak \
-      #       --namespace ${{ inputs.namespace }} \
-      #       --kubeconfig $(pwd)/kubeconfig \
-      #       --ignore-not-found
 
       - name: Create dbildungs-iam-secret secret
         run: |

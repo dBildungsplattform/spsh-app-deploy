@@ -6,6 +6,7 @@ metadata:
 data:
   config-script: |-
     #!/bin/bash
+    echo "DROP DATABASE IF EXISTS $DB_NAME"
     echo "Create owner of the DB"
     echo "SELECT 'CREATE USER spshdeveloper' WHERE NOT EXISTS (SELECT FROM pg_user WHERE usename = 'spshdeveloper')\gexec" | psql -d postgres -w
     echo "GRANT spshdeveloper TO $PGUSER" | psql -d postgres -w
