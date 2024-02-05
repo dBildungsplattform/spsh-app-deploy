@@ -198,6 +198,19 @@ jobs:
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+      
+      # Wait is needed, dbildungs_iam_server expects keycloak to be up!
+      - name: Deploy dbildungs_iam_keycloak Helm chart
+        run: |
+          helm upgrade --install \
+            dbildungscloud-iam-keycloak \
+            dbildungscloud-iam-keycloak \
+            --namespace ${{ inputs.namespace }} \
+            --kubeconfig $(pwd)/kubeconfig \
+            --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
+            --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
+            --set db.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
+            --wait
 
       - name: Deploy dbildungs_iam_client Helm chart
         run: |
@@ -218,14 +231,3 @@ jobs:
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
             --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
-
-      - name: Deploy dbildungs_iam_keycloak Helm chart
-        run: |
-          helm upgrade --install \
-            dbildungscloud-iam-keycloak \
-            dbildungscloud-iam-keycloak \
-            --namespace ${{ inputs.namespace }} \
-            --kubeconfig $(pwd)/kubeconfig \
-            --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
-            --set db.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
