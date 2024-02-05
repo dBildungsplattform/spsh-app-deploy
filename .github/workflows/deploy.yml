@@ -155,7 +155,7 @@ jobs:
             $(helm ls \
               --namespace ${{ inputs.namespace }} \
               --kubeconfig $(pwd)/kubeconfig \
-              --short)
+              --short) \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig
 
