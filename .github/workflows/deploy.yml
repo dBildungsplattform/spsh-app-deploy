@@ -149,10 +149,10 @@ jobs:
       - name: Uninstall all helm-charts in the namespace
         run: |     
           # Get list of installes Helm-Charts in namespace 
-          LIST_OF_HELM_CHARTS_IN_NAMESPACE= $(helm ls \
+          LIST_OF_HELM_CHARTS_IN_NAMESPACE="$(helm ls \
           --namespace ${{ inputs.namespace }} \
           --kubeconfig $(pwd)/kubeconfig \
-          --short)
+          --short)"
 
           echo "$LIST_OF_HELM_CHARTS_IN_NAMESPACE"
           
