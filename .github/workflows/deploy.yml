@@ -160,7 +160,7 @@ jobs:
             echo "No Helmcharts found in namespace ${{ inputs.namespace }}, skipping deletion"
           else
             helm uninstall \
-              "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" \
+              $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
               --namespace ${{ inputs.namespace }} \
               --kubeconfig $(pwd)/kubeconfig
           fi
