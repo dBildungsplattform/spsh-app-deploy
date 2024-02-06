@@ -117,7 +117,7 @@ jobs:
           repository: 'dBildungsplattform/spsh-app-deploy'
 
       - name: Set up kubectl and Helm
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 #v3.2
 
       - name: Configure kubeconfig as tmp file
         run: |
