@@ -154,8 +154,6 @@ jobs:
           --kubeconfig $(pwd)/kubeconfig \
           --short)"
 
-          echo "$LIST_OF_HELM_CHARTS_IN_NAMESPACE"
-          
           if [ -z "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" ]; then
             echo "No Helmcharts found in namespace ${{ inputs.namespace }}, skipping deletion"
           else
