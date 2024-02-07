@@ -29,9 +29,21 @@ jobs:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
     with:
       branch: ${{ github.event.inputs.namespace }}
+  
+  check_namespace_input:
+    needs:
+      - create_branch_identifier
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234
+      run: | 
+        regex='^([[:alpha:]]+?-[[:digit:]]+)'
+        [[ ${{ needs.create_branch_identifier.outputs.namespace_from_branch }} =~ $regex ]]
+        echo "${BASH_REMATCH[1]}"
 
   deploy:
     needs:
+      - check_namespace_input
       - create_branch_identifier
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@main
     with:

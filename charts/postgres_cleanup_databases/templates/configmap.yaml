@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+data:
+  db-deletion-script: |-
+    #!/bin/bash
+    echo "DROP DATABASE IF EXISTS $DB_NAME" | psql -d postgres -w

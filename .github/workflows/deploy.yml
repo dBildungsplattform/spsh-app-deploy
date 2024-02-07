@@ -111,6 +111,11 @@ jobs:
       GITHUB_TOKEN: ${{ github.token }}
       KUBECONFIG_FILE: '${{ secrets.SPSH_DEV_KUBECONFIG }}'
     steps:
+      - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234
+        run: | 
+          regex='^([[:alpha:]]+?-[[:digit:]]+)'
+          [[ ${{ inputs.namespace }} =~ $regex ]]
+          echo "${BASH_REMATCH[1]}"
       - name: checkout repo
         uses: actions/checkout@v2
         with:
