@@ -66,6 +66,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'dBildungsplattform/spsh-app-deploy'
+        ref: 'DBP-577-Create-database-deletion-mechanism' # TODO: Delete this line before merge
 
     - name: Set up kubectl and Helm
       uses: azure/setup-kubectl@v3
@@ -99,7 +100,7 @@ jobs:
         # Generate timestamp for job name uniqueness
         DATE=$(date +%Y%m%d%H%M%S)
 
-        # Define job name for Keycloak database creation job
+        # Define job name for Keycloak database deletion job
         HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
         # Deploy Database for Keycloak
@@ -125,7 +126,7 @@ jobs:
         # Generate timestamp for job name uniqueness
         DATE=$(date +%Y%m%d%H%M%S)
 
-        # Define job name for SPSH-App database creation job
+        # Define job name for SPSH-App database deletion job
         HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
         # Deploy Database for SPSH-App
