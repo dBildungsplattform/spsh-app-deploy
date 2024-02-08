@@ -1,4 +1,4 @@
-namespace: psql-config
+namespace: "psql-config"
 psql:
   imageTag: 4.0.3 # For the latest version of infra-tools, refer to the infra-tools repository: https://github.com/hpi-schul-cloud/infra-tools/tree/master/infra-tools
   resources:
