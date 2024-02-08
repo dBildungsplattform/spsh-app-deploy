@@ -89,7 +89,7 @@ jobs:
           echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping uninstall"
         else
           helm uninstall \
-            $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
+            "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --wait
@@ -105,7 +105,7 @@ jobs:
 
         # Deploy Database for Keycloak
         helm upgrade --install \
-          $HELM_KEYCLOAK_DELETION_JOB_NAME \
+          "$HELM_KEYCLOAK_DELETION_JOB_NAME" \
           ./charts/postgres_delete_databases \
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
@@ -160,7 +160,7 @@ jobs:
           echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping uninstall"
         else
           helm uninstall \
-            $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
+            "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" \
             --namespace ${{ inputs.namespace }} \
             --kubeconfig $(pwd)/kubeconfig \
             --wait
