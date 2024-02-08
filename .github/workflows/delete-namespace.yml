@@ -46,7 +46,7 @@ jobs:
   create_ticket_nr_variable:
     runs-on: ubuntu-latest
     outputs:
-      ticket_nr: ${{ steps.extract_branch_ticket_nr.outputs.branch_ticket_nr }}
+      ticket_nr: ${{ steps.extract_branch_ticket_nr.outputs.ticket_nr }}
     steps:
       - name: Extract project-ticketnumber from branch
         id: extract_branch_ticket_nr
