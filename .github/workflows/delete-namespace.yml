@@ -119,7 +119,7 @@ jobs:
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
-          job/($HELM_KEYCLOAK_DELETION_JOB_NAME) 
+          job $HELM_KEYCLOAK_DELETION_JOB_NAME
 
     - name: Delete SPSH instance database
       run: | 
@@ -145,7 +145,7 @@ jobs:
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
-          job/($HELM_KEYCLOAK_DELETION_JOB_NAME) 
+          job $HELM_KEYCLOAK_DELETION_JOB_NAME
 
     - name: Clean up database deletion Helm-Charts and its jobs from cluster
       run: | 
