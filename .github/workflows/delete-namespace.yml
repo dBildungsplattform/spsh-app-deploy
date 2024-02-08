@@ -41,7 +41,7 @@ jobs:
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
           temp=$(echo "spsh_database_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "spsh_app_db_name=$temp" >> $GITHUB_OUTPUT^
+          echo "spsh_app_db_name=$temp" >> $GITHUB_OUTPUT
 
   create_ticket_nr_variable:
     runs-on: ubuntu-latest
