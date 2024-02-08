@@ -115,7 +115,7 @@ jobs:
 
         # Wait for Job to be completed
         kubectl wait \
-          --namespace ${{ inputs.namespace }} \
+          --namespace psql-config \
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
@@ -141,7 +141,7 @@ jobs:
 
         # Wait for Job to be completed
         kubectl wait \
-          --namespace ${{ inputs.namespace }} \
+          --namespace psql-config \
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
