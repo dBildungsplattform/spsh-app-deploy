@@ -103,7 +103,7 @@ jobs:
         # Define job name for Keycloak database deletion job
         HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
-        # Deploy Database for Keycloak
+        # Deploy Keycloak database deletion job
         helm upgrade --install \
           $HELM_KEYCLOAK_DELETION_JOB_NAME \
           ./charts/postgres_delete_databases \
@@ -129,7 +129,7 @@ jobs:
         # Define job name for SPSH-App database deletion job
         HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
-        # Deploy Database for SPSH-App
+        # Deploy SPSH-App database deletion job
         helm upgrade --install \
           $HELM_KEYCLOAK_DELETION_JOB_NAME \
           ./charts/postgres_delete_databases \
