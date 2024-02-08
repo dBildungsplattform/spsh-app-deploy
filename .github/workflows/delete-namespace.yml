@@ -62,7 +62,13 @@ jobs:
       - create_ticket_nr_variable
     runs-on: ubuntu-latest
     steps:
-    - name: Set up kubectl
+    - name: checkout repo
+      uses: actions/checkout@v2
+      with:
+        repository: 'dBildungsplattform/spsh-app-deploy'
+        ref: 'DBP-577-Create-database-deletion-mechanism' # TODO: Delete this line before merge
+
+    - name: Set up kubectl and Helm
       uses: azure/setup-kubectl@v3
 
     - name: Configure kubeconfig as tmp file
