@@ -105,9 +105,9 @@ jobs:
     steps:
       - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234 or is exactly 'main'
         run: | 
-            if ${{ github.event.inputs.namespace != 'main' }}; then
+            if ${{ inputs.namespace != 'main' }}; then
               regex='^([[:alpha:]]+?-[[:digit:]]+)'
-              [[ ${{ github.event.inputs.namespace }} =~ $regex ]]
+              [[ ${{ inputs.namespace }} =~ $regex ]]
               echo "${BASH_REMATCH[1]}"
             fi
       - name: checkout repo
