@@ -57,10 +57,15 @@ jobs:
       chart_name: "dbildungscloud-iam-keycloak"
       service_name: "dbildungs-iam-keycloak"
 
+  create_ingress_prefix:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@main
+
   create_lowercase_ingress_prefix:
+    needs:
+    - create_ingress_prefix
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
     with:
-      branch: ${{ inputs.namespace }}
+      branch: ${{ github.ref_name != 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
 
   create_keycloak_db_name:
     runs-on: ubuntu-latest
