@@ -9,16 +9,26 @@ on:
         required: true
 
 jobs:
+  check_namespace_input:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234
+      run: | 
+        regex='^([[:alpha:]]+?-[[:digit:]]+)'
+        [[ ${{ github.event.inputs.namespace }} =~ $regex ]]
+        echo "${BASH_REMATCH[1]}"
   delete_namespace:
+    needs: 
+      - check_namespace_input
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/delete-namespace.yml@main
     with:
       namespace: ${{ github.event.inputs.namespace }}
     secrets:
       SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
-  deploy-successful:
+  deletion_successful:
     needs:
       - delete_namespace
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Delete of namespace" ${{ github.event.inputs.namespace }} "done" 
+      - run: echo "Deletion of namespace" ${{ github.event.inputs.namespace }} "done" 

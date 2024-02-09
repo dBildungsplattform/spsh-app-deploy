@@ -1,0 +1,6 @@
+apiVersion: v2
+name: postgres-cleanup-databases
+description: A Helm chart creating a Job to delete PostgreSQL databases
+type: application
+version: 0.1.0
+appVersion: "1.0"
