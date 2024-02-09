@@ -35,11 +35,13 @@ jobs:
       - create_branch_identifier
     runs-on: ubuntu-latest
     steps:
-    - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234
+    - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234 or is exactly 'main'
       run: | 
-        regex='^([[:alpha:]]+?-[[:digit:]]+)'
-        [[ ${{ needs.create_branch_identifier.outputs.namespace_from_branch }} =~ $regex ]]
-        echo "${BASH_REMATCH[1]}"
+          if ${{ github.event.inputs.namespace != 'main' }}; then
+            regex='^([[:alpha:]]+?-[[:digit:]]+)'
+            [[ ${{ github.event.inputs.namespace }} =~ $regex ]]
+            echo "${BASH_REMATCH[1]}"
+          fi
 
   deploy:
     needs:
