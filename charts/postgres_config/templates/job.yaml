@@ -25,7 +25,7 @@ spec:
         {{- end }}
         env:
         - name: DB_NAME
-          value: {{ .Values.database.name }}
+          value: {{ .Values.db.name }}
       volumes:
       - name: config-script-volume
         configMap:
