@@ -181,6 +181,8 @@ jobs:
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
 
+          DYNAMIC_IDENTIFIER=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}
+
           # Define job name for Keycloak database creation job
           HELM_KEYCLOAK_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
