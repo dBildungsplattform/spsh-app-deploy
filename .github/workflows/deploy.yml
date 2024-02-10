@@ -182,6 +182,7 @@ jobs:
           DATE=$(date +%Y%m%d%H%M%S)
 
           DYNAMIC_IDENTIFIER=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}
+          echo "DYNAMIC_IDENTIFIER: ${DYNAMIC_IDENTIFIER}"
 
           # Define job name for Keycloak database creation job
           HELM_KEYCLOAK_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
