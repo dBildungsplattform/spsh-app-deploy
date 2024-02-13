@@ -241,4 +241,4 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
