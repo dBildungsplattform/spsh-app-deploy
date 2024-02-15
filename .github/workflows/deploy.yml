@@ -116,12 +116,12 @@ jobs:
               echo "${BASH_REMATCH[1]}"
             fi
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
 
       - name: Set up kubectl and Helm
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
 
       - name: Configure kubeconfig as tmp file
         run: |
