@@ -20,7 +20,7 @@ jobs:
   delete_namespace:
     needs: 
       - check_namespace_input
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/delete-namespace.yml@dbp-608-Fixed-commit-SHA-for-external-Jobs
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/delete-namespace.yml@main
     with:
       namespace: ${{ github.event.inputs.namespace }}
     secrets:
