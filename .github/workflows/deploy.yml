@@ -191,7 +191,8 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
-            --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
+            --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
+            --set db.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
 
       - name: Create Database for SPSH-App
         run: |
@@ -208,8 +209,7 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
-            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
-            # keep this until Naming Conventions have benn merged everywhere
+            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}  \
             --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
       
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
@@ -223,6 +223,7 @@ jobs:
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
             --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
+            --set db.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} 
             --wait
 
       - name: Deploy dbildungs_iam_client Helm chart
@@ -243,5 +244,5 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
-            # keep this until Naming Conventions have benn merged everywhere
-            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}  \
+            --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
