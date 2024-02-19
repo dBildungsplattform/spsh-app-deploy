@@ -191,7 +191,7 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
-            --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} 
+            --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }}
 
       - name: Create Database for SPSH-App
         run: |
