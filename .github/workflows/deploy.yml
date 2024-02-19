@@ -209,6 +209,8 @@ jobs:
             --set auth.existingSecret="psql-config-secret" \
             --kubeconfig $(pwd)/kubeconfig \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+            # keep this until Naming Conventions have benn merged everywhere
+            --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
       
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
       - name: Deploy dbildungs_iam_keycloak Helm chart
@@ -241,4 +243,5 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
+            # keep this until Naming Conventions have benn merged everywhere
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
