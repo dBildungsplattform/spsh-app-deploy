@@ -62,4 +62,4 @@ jobs:
       - deploy
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Deployment workflow was successful with Workflow tags 1.1" 
+      - run: echo "Deployment workflow was successful" 
