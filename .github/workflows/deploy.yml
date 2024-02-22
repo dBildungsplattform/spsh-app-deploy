@@ -221,6 +221,7 @@ jobs:
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
             --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
+            --set db.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
             --wait
 
       - name: Deploy dbildungs_iam_client Helm chart
@@ -241,4 +242,5 @@ jobs:
             --kubeconfig $(pwd)/kubeconfig \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+            --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}  \
+            --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
