@@ -67,7 +67,6 @@ jobs:
     with:
       branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
 
-
   run_playwright_tests: 
     needs:
       - create_lowercase_ingress_prefix
