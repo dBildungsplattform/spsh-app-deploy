@@ -67,6 +67,14 @@ jobs:
     with:
       branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
 
+
+  run_playwright_tests: 
+    needs:
+      - create_lowercase_ingress_prefix
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
+    with:
+      frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
+    
   create_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
