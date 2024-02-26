@@ -171,7 +171,7 @@ jobs:
 
       - name: Create dbildungs-iam secret
         run: |
-          kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./dbildungs-iam-secret-dev.yaml
+          kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./dbildungs-iam-secrets-dev.yaml
 
       - name: Create keycloak secret
         run: |
