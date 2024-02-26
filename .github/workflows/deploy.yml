@@ -66,13 +66,6 @@ jobs:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@main
     with:
       branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
-
-  run_playwright_tests: 
-    needs:
-      - create_lowercase_ingress_prefix
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
-    with:
-      frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
     
   create_keycloak_db_name:
     runs-on: ubuntu-latest
@@ -251,3 +244,11 @@ jobs:
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}  \
             --set db.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+
+  # run_playwright_tests:
+  #   needs:
+  #     - create_lowercase_ingress_prefix
+  #     - deployment
+  #   uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
+  #   with:
+  #     frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
