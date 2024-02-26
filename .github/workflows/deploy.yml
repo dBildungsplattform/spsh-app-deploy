@@ -249,6 +249,6 @@ jobs:
     needs:
       - create_lowercase_ingress_prefix
       - deployment
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@DBP-618-Ausfuehren_der_Playwright-Tests_fuer_beliebige_Branches
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
