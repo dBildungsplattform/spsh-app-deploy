@@ -1,0 +1,63 @@
+---
+name: Rollout Release Action 
+
+on:
+  workflow_call:
+    inputs:
+      RELEASE_TAG:
+        required: true
+        type: string
+      ONEPASSWORD_VAULT:
+        required: true
+        type: string
+    secrets:
+      TOKEN:
+        required: true
+      KUBECONFIG:
+        required: true
+      RC_WEBHOOK: 
+        required: true
+
+permissions:
+  contents: read
+
+  rollout:
+    runs-on: 'ubuntu-latest'
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          repository: 'dBildungsplattform/spsh-app-deploy'
+
+      - name: Install kubectl and Helm
+        uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
+
+      - name: Install Helm Compose Plugin
+        run: |
+          helm plugin install https://github.com/seacrew/helm-compose --version 1.3.0
+
+      - name: Set kubeconfig
+        working-directory: ${{ github.workspace }}/
+        run: |
+          mkdir .kube/
+          chmod 600 .kube
+          ch .kube/
+          echo "${{ secrets.KUBECONFIG }}" > config
+
+      # shall the namespace be an optional setting? When we want a seond staging instance it may be usefaul
+      # Databases are managed in (infra-dbp repository)
+      - name: Create dependencies pre-deployment via Helm Charts
+        run: |
+          helm upgrade --install \
+            pre-deplyoment \
+            ./charts/pre-deplyoment \
+            --namespace main \
+            --set vault="${{ inputs.ONEPASSWORD_VAULT }}" \
+            --kubeconfig $(pwd)/.kube/config \
+      
+      - name: Deploy Release via Helm Compose 
+        run: |
+          helm compose up --file $(pwd)/release-versions/spsh-staging-schulportal.yml

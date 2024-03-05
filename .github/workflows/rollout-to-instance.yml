@@ -1,0 +1,58 @@
+---
+name: Rollout to Instances
+run-name: Rollout of ${{ inputs.config_tag_name }} to ${{ inputs.instance_group }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      RELEASE_TAG:
+        description: 'Release Tag from the spsh_app_deploy'
+        required: true
+      TARGET_INSTANCES:
+        description: "Decide where to do the rollout. Choose a Stage, a single instance or everywhere with 'all'"
+        required: true
+        default: all
+
+jobs:
+  approve_staging:
+    environment: approve_staging
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Version of release tag ${{ github.event.inputs.RELEASE_TAG }}"
+      - run: echo "Target(s) to rollout to ${{ github.event.inputs.TARGET_INSTANCES }}"
+      - run: echo "Workflow is triggered by ${{ github.ref_type }} ${{ github.ref_name }}"
+
+  staging_spsh:
+    needs:
+      - approve_staging
+    uses: ./.github/workflows/rollout-release.yml
+    with:
+      RELEASE_TAG: ${{ github.event.inputs.RELEASE_TAG }}
+      ONEPASSWORD_VAULT: spsh-staging-schulportal
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      KUBECONFIG: ${{ secrets.SPSH_STAGING_KUBECONFIG }}
+      RC_WEBHOOK:  ${{ secrets.RC_WEBHOOK }} 
+
+  # approve_prod:
+  #   if: ${{ !failure() }}
+  #   needs:
+  #     - spsh-staging
+  #   environment: approve_prod
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: echo "Version ${{ github.event.inputs.RELEASE_TAG }}"
+  #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.TARGET_INSTANCES }}"
+  #     - run: echo "Workflow is triggerd by ${{ github.ref_type }} ${{ github.ref_name }}"
+     
+  # prod_spsh:
+  #     needs:
+  #       - approve_prod
+  #     uses: ./.github/workflows/rollout-release.yml
+  #     with:
+  #       RELEASE_TAG: ${{ github.event.inputs.RELEASE_TAG }}
+  #       ONEPASSWORD_VAULT: spsh-prod-schulportal
+  #     secrets:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #       KUBECONFIG: ${{ secrets.SPSH_PROD_KUBECONFIG }}
+  #       # RC_WEBHOOK:  ${{ secrets.RC_WEBHOOK }} 

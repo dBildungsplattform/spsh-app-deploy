@@ -115,11 +115,11 @@ jobs:
               [[ ${{ inputs.namespace }} =~ $regex ]]
               echo "${BASH_REMATCH[1]}"
             fi
+
       - name: checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
-          ref: "DBP-641-Change-Secret-name"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
@@ -168,7 +168,7 @@ jobs:
               --namespace ${{ inputs.namespace }} \
               --kubeconfig $(pwd)/kubeconfig
           fi
-
+        # change this so secrets get installed
       - name: Create dbildungs-iam secret
         run: |
           kubectl --namespace=${{ inputs.namespace }} --kubeconfig $(pwd)/kubeconfig apply -f ./dbildungs-iam-secrets-dev.yaml

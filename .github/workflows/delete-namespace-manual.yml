@@ -1,4 +1,4 @@
-name: Delete dev namespace manually
+name: Delete Kubernetes Namespace manually
 
 on:
   workflow_dispatch:

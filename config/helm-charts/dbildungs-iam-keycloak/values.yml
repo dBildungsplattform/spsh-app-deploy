@@ -1,0 +1,6 @@
+auth: 
+  existingSecret: keycloak 
+# keycloakHostname: keycloak.staging.spsh.dbildungsplattform.de 
+# frontendHostname: main.staging.spsh.dbildungsplattform.de 
+database:
+  name: keycloak
