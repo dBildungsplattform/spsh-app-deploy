@@ -15,10 +15,6 @@ on:
         required: true
         description: "Name of the helm chart to search"
         type: string
-      service_name:
-        required: true
-        description: "Name of the Service, used for logging"
-        type: string
     outputs:
       helm_chart_tagname: 
         description: "Tagname of the helm-chart"
@@ -34,7 +30,7 @@ jobs:
     outputs:
       helm_chart_tagname: ${{ steps.set_tagname_as_output.outputs.helm_chart_tagname }}
     steps:
-      - name: Search ${{ inputs.service_name }} and get Helm Chart release by ticket name with releaseNameRegEx action
+      - name: Search ${{ inputs.chart_name }} and get Helm Chart release by ticket name with releaseNameRegEx action
         if: ${{ github.ref_name != 'main' }}
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@cedef2faf69cb7c55b285bad07688d04430b7ada  #1.2.4
@@ -44,7 +40,7 @@ jobs:
           doNotFailIfNotFound: 'true'
           repo: "${{ inputs.github_repository }}"
     
-      - name: Set Branch Helm Chart tagname as variable for ${{ inputs.service_name }}
+      - name: Set Branch Helm Chart tagname as variable for ${{ inputs.chart_name }}
         if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name != '' && github.ref_name != 'main' }}
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}"
@@ -63,10 +59,10 @@ jobs:
       - name:  Exit if latest main helm-chart is not found 
         if: steps.getMainByReleaseNameRegEx.outputs.tag_name == '' && steps.getByReleaseNameRegEx.outputs.tag_name == ''
         run: |
-          echo No ${{ inputs.service_name }} Helm Chart is not found, exit 
+          echo No ${{ inputs.chart_name }} Helm Chart is not found, exit 
           exit 1
 
-      - name:  Set Helm Chart tagname as variable for ${{ inputs.service_name }}, last from main
+      - name:  Set Helm Chart tagname as variable for ${{ inputs.chart_name }}, last from main
         if: steps.getByReleaseNameRegEx.outputs.tag_name == '' 
         run: |
           echo "${{ steps.getMainByReleaseNameRegEx.outputs.tag_name }}"
