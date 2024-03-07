@@ -34,33 +34,33 @@ permissions:
 
 jobs:
   find_dbildungs_iam_server_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-647-change-dbildungs-iam-server-name
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_server_branch }}
       chart_name: "dbildungs-iam-server"
 
   find_schulportal_client_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-647-change-dbildungs-iam-server-name
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.schulportal_client_branch }}
       chart_name: "schulportal-client"
 
   find_dbildungs_iam_keycloak_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-647-change-dbildungs-iam-server-name
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
       chart_name: "dbildungs-iam-keycloak"
 
   create_ingress_prefix:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@1
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@2
 
   create_lowercase_ingress_prefix:
     needs:
     - create_ingress_prefix
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@1
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/branch-to-namespace.yml@2
     with:
       branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
     
@@ -117,7 +117,7 @@ jobs:
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes in repo
-          ref: "DBP-647-change-dbildungs-iam-server-name"
+          ref: "2"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
