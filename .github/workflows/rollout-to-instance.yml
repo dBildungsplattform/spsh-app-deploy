@@ -23,7 +23,7 @@ jobs:
       - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
       - run: echo "Workflow is triggered by ${{ github.ref_type }} ${{ github.ref_name }}"
 
-  staging_spsh:
+  spsh_staging:
     needs:
       - approve_staging
     uses: ./.github/workflows/rollout-release.yml
@@ -46,7 +46,7 @@ jobs:
   #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
   #     - run: echo "Workflow is triggerd by ${{ github.ref_type }} ${{ github.ref_name }}"
      
-  # prod_spsh:
+  # spsh_prod:
   #     needs:
   #       - approve_prod
   #     uses: ./.github/workflows/rollout-release.yml
