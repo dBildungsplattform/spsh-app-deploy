@@ -3,6 +3,7 @@ name: Rollout to Instances
 run-name: Rollout of ${{ inputs.config_tag_name }} to ${{ inputs.instance_group }}
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       release_tag:
@@ -28,7 +29,6 @@ jobs:
     uses: ./.github/workflows/rollout-release.yml
     with:
       instance_name: spsh-staging-schulportal
-      onepassword_vault: spsh-staging-schulportal
       release_tag: ${{ github.event.inputs.release_tag }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
@@ -53,7 +53,6 @@ jobs:
   #     with:
   #       instance_name: spsh-prod-schulportal
   #       release_tag: ${{ github.event.inputs.release_tag }}
-  #       onepassword_vault: spsh-prod-schulportal
   #     secrets:
   #       token: ${{ secrets.GITHUB_TOKEN }}
   #       KUBECONFIG: ${{ secrets.SPSH_PROD_KUBECONFIG }}

@@ -7,9 +7,6 @@ on:
       release_tag:
         type: string
         required: true
-      onepassword_vault:
-        type: string
-        required: true
       instance_name:
         type: string
         required: true
@@ -49,17 +46,19 @@ permissions:
           chmod 600 .kube
           ch .kube/
           echo "${{ secrets.KUBECONFIG }}" > config
-
-      # Databases are managed in infra-dbp repository
-      - name: Create Init Helm Charts
-        run: |
-          helm upgrade --install \
-            pre-deplyoment \
-            ./charts/spsh-init \
-            --namespace spsh \
-            --set vault="${{ inputs.onepassword_vault }}" \
-            --kubeconfig $(pwd)/.kube/config \
       
       - name: Deploy Release via Helm Compose 
         run: |
           helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
+
+    # tests:
+    #   runs-on: 'ubuntu-latest'
+    #   needs: 
+    #     - release
+    #   env:
+    #     GITHUB_TOKEN: ${{ github.token }}
+    #     KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+    #   steps:
+    #     uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
+    #     with:
+    #       frontendHostname: "spsh.staging.spsh.dbildungsplattform.de"

@@ -8,22 +8,28 @@ storage:
   numberOfRevisions: 15
 
 releases:
+  spsh-init:
+    chart: ./charts/spsh-init
+    namespace: spsh
+    kubeconfig: ~/spsh-app-deploy/.kube/config
+    valueFiles: ~/spsh-app-deploy/config/helm_charts/staging/values.yml
+    createNamespace: true
+    wait: true 
   dbildungs_iam_keycloak:
     chart: dBildungsplattform/dbildungs-iam-keycloak
     chartVersion: 1.0.0
-    namespace: main
+    namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
      # do we need a staging and a prod config? Probably yes?
      # multiple value filed prod/staging/all/instance/service
     valueFiles:
       - ~/spsh-app-deploy/config/helm_charts/dbildungs-iam-keycloak/values.yml
       - ~/spsh-app-deploy/config/helm_charts/staging/values.yml
-    createNamespace: true
     wait: true 
   schulportal_client:
     chart: dBildungsplattform/schulportal-client
     chartVersion: 1.0.0
-    namespace: main
+    namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
     valueFiles:
       - ~/spsh-app-deploy/config/helm_charts/dbildungs-iam-client/values.yml
@@ -31,7 +37,7 @@ releases:
   dbildungs_iam_server:
     chart: dBildungsplattform/dbildungs-iam-server
     chartVersion: 1.0.0
-    namespace: main
+    namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
     valueFiles:
       - ~/spsh-app-deploy/config/helm_charts/dbildungs-iam-server/values.yml

@@ -4,3 +4,5 @@ auth:
 # frontendHostname: main.staging.spsh.dbildungsplattform.de 
 database:
   name: dbildungs-iam-server
+seeding:
+  enabled: false
