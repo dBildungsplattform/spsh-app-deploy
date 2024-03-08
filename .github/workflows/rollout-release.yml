@@ -4,12 +4,15 @@ name: Rollout Release Action
 on:
   workflow_call:
     inputs:
-      RELEASE_TAG:
-        required: true
+      release_tag:
         type: string
-      ONEPASSWORD_VAULT:
         required: true
+      onepassword_vault:
         type: string
+        required: true
+      instance_name:
+        type: string
+        required: true
     secrets:
       TOKEN:
         required: true
@@ -47,17 +50,16 @@ permissions:
           ch .kube/
           echo "${{ secrets.KUBECONFIG }}" > config
 
-      # shall the namespace be an optional setting? When we want a seond staging instance it may be usefaul
-      # Databases are managed in (infra-dbp repository)
-      - name: Create dependencies pre-deployment via Helm Charts
+      # Databases are managed in infra-dbp repository
+      - name: Create Init Helm Charts
         run: |
           helm upgrade --install \
             pre-deplyoment \
-            ./charts/pre-deplyoment \
-            --namespace main \
-            --set vault="${{ inputs.ONEPASSWORD_VAULT }}" \
+            ./charts/spsh-init \
+            --namespace spsh \
+            --set vault="${{ inputs.onepassword_vault }}" \
             --kubeconfig $(pwd)/.kube/config \
       
       - name: Deploy Release via Helm Compose 
         run: |
-          helm compose up --file $(pwd)/release-versions/spsh-staging-schulportal.yml
+          helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml

@@ -5,10 +5,10 @@ run-name: Rollout of ${{ inputs.config_tag_name }} to ${{ inputs.instance_group 
 on:
   workflow_dispatch:
     inputs:
-      RELEASE_TAG:
+      release_tag:
         description: 'Release Tag from the spsh_app_deploy'
         required: true
-      TARGET_INSTANCES:
+      target_instances:
         description: "Decide where to do the rollout. Choose a Stage, a single instance or everywhere with 'all'"
         required: true
         default: all
@@ -18,8 +18,8 @@ jobs:
     environment: approve_staging
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Version of release tag ${{ github.event.inputs.RELEASE_TAG }}"
-      - run: echo "Target(s) to rollout to ${{ github.event.inputs.TARGET_INSTANCES }}"
+      - run: echo "Version of release tag ${{ github.event.inputs.release_tag }}"
+      - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
       - run: echo "Workflow is triggered by ${{ github.ref_type }} ${{ github.ref_name }}"
 
   staging_spsh:
@@ -27,8 +27,9 @@ jobs:
       - approve_staging
     uses: ./.github/workflows/rollout-release.yml
     with:
-      RELEASE_TAG: ${{ github.event.inputs.RELEASE_TAG }}
-      ONEPASSWORD_VAULT: spsh-staging-schulportal
+      instance_name: spsh-staging-schulportal
+      onepassword_vault: spsh-staging-schulportal
+      release_tag: ${{ github.event.inputs.release_tag }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
       KUBECONFIG: ${{ secrets.SPSH_STAGING_KUBECONFIG }}
@@ -41,8 +42,8 @@ jobs:
   #   environment: approve_prod
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - run: echo "Version ${{ github.event.inputs.RELEASE_TAG }}"
-  #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.TARGET_INSTANCES }}"
+  #     - run: echo "Version ${{ github.event.inputs.release_tag }}"
+  #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
   #     - run: echo "Workflow is triggerd by ${{ github.ref_type }} ${{ github.ref_name }}"
      
   # prod_spsh:
@@ -50,8 +51,9 @@ jobs:
   #       - approve_prod
   #     uses: ./.github/workflows/rollout-release.yml
   #     with:
-  #       RELEASE_TAG: ${{ github.event.inputs.RELEASE_TAG }}
-  #       ONEPASSWORD_VAULT: spsh-prod-schulportal
+  #       instance_name: spsh-prod-schulportal
+  #       release_tag: ${{ github.event.inputs.release_tag }}
+  #       onepassword_vault: spsh-prod-schulportal
   #     secrets:
   #       token: ${{ secrets.GITHUB_TOKEN }}
   #       KUBECONFIG: ${{ secrets.SPSH_PROD_KUBECONFIG }}
