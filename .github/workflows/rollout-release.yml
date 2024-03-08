@@ -21,6 +21,7 @@ on:
 permissions:
   contents: read
 
+jobs:
   rollout:
     runs-on: 'ubuntu-latest'
     env:
