@@ -1,7 +1,7 @@
 apiVersion: 1.1
 
 # Create this namespace beforehand? not sure whether it is created if not already present
-#  we could also use a s3 bucket 
+#  we could also use a s3 bucket
 storage:
   name: release-management
   type: kubernetes
@@ -9,8 +9,7 @@ storage:
 
 releases:
   dbildungs_iam_keycloak:
-    # chart: dBildungsplattform/dbildungs-iam-keycloak
-    chart: dBildungsplattform/dbildungscloud-iam-keycloak
+    chart: dBildungsplattform/dbildungs-iam-keycloak
     chartVersion: 1.0.0
     namespace: main
     kubeconfig: ~/spsh-app-deploy/.kube/config
@@ -22,8 +21,7 @@ releases:
     createNamespace: true
     wait: true 
   schulportal_client:
-    # chart: dBildungsplattform/schulportal-client
-    chart: dBildungsplattform/spsh-client
+    chart: dBildungsplattform/schulportal-client
     chartVersion: 1.0.0
     namespace: main
     kubeconfig: ~/spsh-app-deploy/.kube/config
@@ -31,8 +29,7 @@ releases:
       - ~/spsh-app-deploy/config/helm_charts/dbildungs-iam-client/values.yml
 
   dbildungs_iam_server:
-    # chart: dBildungsplattform/dbildungs-iam-server
-    chart: dBildungsplattform/dbildungscloud-iam-server
+    chart: dBildungsplattform/dbildungs-iam-server
     chartVersion: 1.0.0
     namespace: main
     kubeconfig: ~/spsh-app-deploy/.kube/config
