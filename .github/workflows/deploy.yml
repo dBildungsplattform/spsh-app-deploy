@@ -164,7 +164,8 @@ jobs:
             helm uninstall \
               $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
               --namespace ${{ inputs.namespace }} \
-              --kubeconfig $(pwd)/kubeconfig
+              --kubeconfig $(pwd)/kubeconfig \
+              --wait
           fi
 
       - name: Create dbildungs-iam-server secret
