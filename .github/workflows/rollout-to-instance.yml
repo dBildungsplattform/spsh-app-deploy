@@ -3,7 +3,6 @@ name: Rollout to Instances
 run-name: Rollout of ${{ inputs.config_tag_name }} to ${{ inputs.instance_group }}
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       release_tag:

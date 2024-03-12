@@ -12,7 +12,8 @@ releases:
     chart: ./charts/spsh-init
     namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
-    valueFiles: ~/spsh-app-deploy/config/helm_charts/staging/values.yml
+    valueFiles: 
+      - ~/spsh-app-deploy/config/helm_charts/staging/values.yml
     createNamespace: true
     wait: true 
   dbildungs_iam_keycloak:
