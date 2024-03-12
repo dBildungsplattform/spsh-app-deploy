@@ -45,4 +45,4 @@ releases:
       - ~/spsh-app-deploy/config/helm_charts/staging/values.yml
 
 repositories:
-  dBildungsplattform: https://github.com/dBildungsplattform/helm-charts-registry
+  dBildungsplattform: https://dbildungsplattform.github.io/helm-charts-registry/
