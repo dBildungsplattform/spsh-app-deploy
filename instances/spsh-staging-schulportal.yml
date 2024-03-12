@@ -14,12 +14,12 @@ releases:
     valueFiles: 
       - ./config/helm-charts/staging/values.yml
     createNamespace: true
-    wait: true 
+    wait: true
   dbildungs-iam-keycloak:
     chart: dbildungsplattform/dbildungs-iam-keycloak
     chartVersion: 8.8.12
     namespace: spsh
-     # multiple value filed prod/staging/all/instance/service
+     # multiple value filled prod/staging/all/instance/service
     valueFiles:
       - ./config/helm-charts/dbildungs-iam-keycloak/values.yml
       - ./config/helm-charts/staging/values.yml

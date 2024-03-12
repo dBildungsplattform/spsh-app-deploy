@@ -50,6 +50,7 @@ jobs:
 
 
       # let action fail on error
+      # The Helm Charts are all deployed at once 
       - name: Deploy Release via Helm Compose 
         working-directory: ${{ github.workspace }}
         run: |

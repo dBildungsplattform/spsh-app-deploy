@@ -3,4 +3,4 @@ auth:
 # keycloakHostname: keycloak.staging.spsh.dbildungsplattform.de 
 # frontendHostname: main.staging.spsh.dbildungsplattform.de 
 database:
-  name: dbildungs-iam-keycloak
+  name: dbildungs_iam_keycloak
