@@ -43,12 +43,17 @@ jobs:
           helm plugin install https://github.com/seacrew/helm-compose --version 1.3.0
 
       - name: Set kubeconfig
+        working-directory: ${{ github.workspace }}
         run: |
           mkdir /home/runner/.kube/
+          whoami
           echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
+          ls -la /home/runner/.kube
           chown $(id -u):$(id -g) /home/runner/.kube/config
           chown -R $(id -u):$(id -g) /home/runner/.kube
-          chmod 600 /home/runner/.kube
+          chmod 600 /home/runner/.kube/config
+          ls -la /home/runner/.kube
+
       
       # let action fail on error
       - name: Deploy Release via Helm Compose 
