@@ -47,7 +47,8 @@ jobs:
         run: |
           mkdir .kube/
           echo "${{ secrets.KUBECONFIG }}" > .kube/config
-          chmod 600 .kube
+          # chmod 600 .kube
+          pwd
       
       - name: Deploy Release via Helm Compose 
         run: |
