@@ -17,7 +17,7 @@ releases:
     wait: true 
   dbildungs_iam_keycloak:
     chart: dBildungsplattform/dbildungs-iam-keycloak
-    chartVersion: 1.0.0
+    chartVersion: 8.8.12
     namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
      # do we need a staging and a prod config? Probably yes?
@@ -28,7 +28,7 @@ releases:
     wait: true 
   schulportal_client:
     chart: dBildungsplattform/schulportal-client
-    chartVersion: 1.0.0
+    chartVersion: 8.8.12
     namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
     valueFiles:
@@ -36,7 +36,7 @@ releases:
 
   dbildungs_iam_server:
     chart: dBildungsplattform/dbildungs-iam-server
-    chartVersion: 1.0.0
+    chartVersion: 8.8.12
     namespace: spsh
     kubeconfig: ~/spsh-app-deploy/.kube/config
     valueFiles:
