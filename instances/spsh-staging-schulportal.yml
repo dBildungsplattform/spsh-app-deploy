@@ -13,7 +13,7 @@ releases:
     namespace: spsh
     # kubeconfig: $(pwd)/.kube/config
     valueFiles: 
-      - $(pwd)/config/helm_charts/staging/values.yml
+      - ./config/helm_charts/staging/values.yml
     createNamespace: true
     wait: true 
   dbildungs-iam-keycloak:
@@ -24,8 +24,8 @@ releases:
      # do we need a staging and a prod config? Probably yes?
      # multiple value filed prod/staging/all/instance/service
     valueFiles:
-      - $(pwd)/config/helm_charts/dbildungs-iam-keycloak/values.yml
-      - $(pwd)/config/helm_charts/staging/values.yml
+      - ./config/helm_charts/dbildungs-iam-keycloak/values.yml
+      - ./config/helm_charts/staging/values.yml
     wait: true 
   schulportal-client:
     chart: dbildungsplattform/schulportal-client
@@ -33,15 +33,15 @@ releases:
     namespace: spsh
     # kubeconfig: $(pwd)/.kube/config
     valueFiles:
-      - $(pwd)/config/helm_charts/dbildungs-iam-client/values.yml
+      - ./config/helm_charts/dbildungs-iam-client/values.yml
   dbildungs-iam-server:
     chart: dbildungsplattform/dbildungs-iam-server
     chartVersion: 8.8.12
     namespace: spsh
     # kubeconfig: $(pwd)/.kube/config
     valueFiles:
-      - $(pwd)/config/helm_charts/dbildungs-iam-server/values.yml
-      - $(pwd)/config/helm_charts/staging/values.yml
+      - ./config/helm_charts/dbildungs-iam-server/values.yml
+      - ./config/helm_charts/staging/values.yml
 
 repositories:
   dbildungsplattform: https://dbildungsplattform.github.io/helm-charts-registry/
