@@ -46,8 +46,9 @@ jobs:
         run: |
           mkdir /home/runner/.kube/
           echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
-          chmod 600 .kube
+          chmod 600 /home/runner/.kube
       
+      # let action fail on error
       - name: Deploy Release via Helm Compose 
         working-directory: ${{ github.workspace }}
         run: |
