@@ -44,10 +44,10 @@ jobs:
 
       - name: Set kubeconfig
         run: |
-          mkdir $(pwd)/.kube/
-          echo "${{ secrets.KUBECONFIG }}" > $(pwd)/.kube/config
+          mkdir /home/runner/.kube/
+          echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
           # chmod 600 .kube
-          pwd
+          ls /home/runner/.kube
       
       - name: Deploy Release via Helm Compose 
         run: |

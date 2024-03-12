@@ -1,6 +1,6 @@
 ---
 name: Rollout to Instances
-run-name: Rollout of ${{ inputs.config_tag_name }} to ${{ inputs.target_instances }}
+run-name: Rollout of ${{ inputs.release_tag }} to ${{ inputs.target_instances }}
 
 on:
   workflow_dispatch:
@@ -22,9 +22,10 @@ jobs:
   #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
   #     - run: echo "Workflow is triggered by ${{ github.ref_type }} ${{ github.ref_name }}"
 
-  spsh_staging:
+  spsh-staging-schulportal:
     # needs:
       # - approve_staging
+    if:  inputs.target_instances == 'spsh-staging-schulportal' || inputs.target_instances == 'staging' || inputs.target_instances == 'all'
     uses: ./.github/workflows/rollout-release.yml
     with:
       instance_name: spsh-staging-schulportal
@@ -45,7 +46,8 @@ jobs:
   #     - run: echo "Target(s) to rollout to ${{ github.event.inputs.target_instances }}"
   #     - run: echo "Workflow is triggerd by ${{ github.ref_type }} ${{ github.ref_name }}"
      
-  # spsh_prod:
+  # spsh-prod-schulportal:
+  #     if:  inputs.target_instances == 'spsh-prod-schulportal' || inputs.target_instances == 'prod' || inputs.target_instances == 'all'
   #     needs:
   #       - approve_prod
   #     uses: ./.github/workflows/rollout-release.yml
