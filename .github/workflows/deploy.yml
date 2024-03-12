@@ -117,7 +117,7 @@ jobs:
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
-          # ref: "<branch_name>"
+          ref: DBP-693-seed-data-doesnt-get-updated
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
@@ -164,8 +164,7 @@ jobs:
             helm uninstall \
               $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
               --namespace ${{ inputs.namespace }} \
-              --kubeconfig $(pwd)/kubeconfig \
-              --wait
+              --kubeconfig $(pwd)/kubeconfig
           fi
 
       - name: Create dbildungs-iam-server secret
