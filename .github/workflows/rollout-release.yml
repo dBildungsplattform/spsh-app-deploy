@@ -43,10 +43,9 @@ jobs:
           helm plugin install https://github.com/seacrew/helm-compose --version 1.3.0
 
       - name: Set kubeconfig
-        working-directory: ${{ github.workspace }}/
         run: |
-          mkdir .kube/
-          echo "${{ secrets.KUBECONFIG }}" > .kube/config
+          mkdir $(pwd)/.kube/
+          echo "${{ secrets.KUBECONFIG }}" > $(pwd)/.kube/config
           # chmod 600 .kube
           pwd
       

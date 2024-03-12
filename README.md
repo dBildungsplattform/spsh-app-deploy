@@ -20,3 +20,11 @@ More info on what the Dev Pipeline does can be found on Confluence: [Dev Pipelin
 Also the Rollouts ......
 
 For more information on the Release Process, see this Confluence Page: [Dev Pipeline](https://docs.dbildungscloud.de/display/PROD/SPSH+Releasemanagement)
+
+
+
+# Debugging the Release Proces 
+ to debug the release process change the ref of the code that is checked out in the rollout-release.yml repository. Yuo can also trigger a releae via github cli ("gh") by running this command. 
+ ```
+gh workflow run rollout-to-instance.yml -f release_tag="release-tag" -f target_instances="target_instance" --ref branch_name
+```
