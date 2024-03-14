@@ -59,9 +59,11 @@ jobs:
         run: |
           helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
 
-  tests_playwright:
-    needs: 
-      - rollout
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@1
-    with:
-      frontendHostname: ${{ inputs.frontend_hostname }}
+  # A User has to be available and add repo secret USER and PW for this to function
+  # tests_playwright:
+  #   needs: 
+  #     - rollout
+  #   uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@1
+  #   with:
+  #     frontendHostname: ${{ inputs.frontend_hostname }}
+  #   secrets: inherit

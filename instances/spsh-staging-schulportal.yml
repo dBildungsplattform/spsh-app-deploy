@@ -12,7 +12,7 @@ releases:
     chart: ./charts/spsh-init
     namespace: spsh
     valueFiles: 
-      - ./config/helm-charts/staging/general/values.yml
+      - ./config/helm-charts/staging/general/values-oinn.yml
     createNamespace: true
     wait: true
   dbildungs-iam-keycloak:
