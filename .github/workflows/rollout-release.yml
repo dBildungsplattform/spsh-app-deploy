@@ -4,10 +4,13 @@ name: Rollout Release Action
 on:
   workflow_call:
     inputs:
-      release_tag:
+      instance_name:
         type: string
         required: true
-      instance_name:
+      frontend_hostname:
+        type: string
+        required: true
+      release_tag:
         type: string
         required: true
     secrets:

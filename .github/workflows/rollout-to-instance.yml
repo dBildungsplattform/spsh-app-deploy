@@ -5,13 +5,13 @@ run-name: Rollout of ${{ inputs.release_tag }} to ${{ inputs.target_instances }}
 on:
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: 'Release Tag from the spsh_app_deploy repository'
-        required: true
       target_instances:
         description: "Decide where to do the rollout. Choose a Stage, a single instance or everywhere with 'all'. Default: all"
         required: true
         default: all
+      release_tag:
+        description: 'Release Tag from the spsh_app_deploy repository'
+        required: true
 
 jobs:
   # approve_staging:
