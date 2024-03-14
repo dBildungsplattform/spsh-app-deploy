@@ -52,11 +52,15 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
+      - name: Helm add dbilungsplattform
+        run: |
+          helm repo add dbildungsplattform https://dbildungsplattform.github.io/helm-charts-registry/
+
       - name: Rollout Keycloak Helm Chart 
         run: |
             helm upgrade --install \
             dbildungs-iam-keycloak \
-            dbildungs-iam-keycloak \
+            dbildungsplattform/dbildungs-iam-keycloak \
             --namespace spsh \
             --kubeconfig /home/runner/.kube/config \
             --version ${{ inputs.release_tag }} \
