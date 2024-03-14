@@ -52,14 +52,26 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
-      # let action fail on error
-      # The Helm Charts are all deployed at once 
-      - name: Deploy Release via Helm Compose 
-        working-directory: ${{ github.workspace }}
+      - name: Rollout Keycloak Helm Chart 
         run: |
-          helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
+            helm upgrade --install \
+            dbildungs-iam-keycloak \
+            dbildungs-iam-keycloak \
+            --namespace spsh \
+            --kubeconfig /home/runner/.kube/config \
+            --version ${{ inputs.release_tag }} \
+            --values  ./config/helm-charts/staging/general/values.yml  \
+            --values  ./config/helm-charts/staging/dbildungs-iam-keycloak/values.yml  \
+            --wait
 
-  # A User has to be available and add repo secret USER and PW for this to function
+  #     # let action fail on error
+  #     # The Helm Charts are all deployed at once 
+  #     - name: Deploy Release via Helm Compose 
+  #       working-directory: ${{ github.workspace }}
+  #       run: |
+  #         helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
+
+  # # A User has to be available and add repo secret USER and PW for this to function
   # tests_playwright:
   #   needs: 
   #     - rollout
