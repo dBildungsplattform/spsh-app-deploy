@@ -21,15 +21,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ inputs.instance_name }}-rollout-release
+  cancel-in-progress: true
+
 jobs:
   rollout:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-        concurrency:
-          group: ${{ inputs.instance_name }}
-          cancel-in-progress: true
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # ref: "${{ inputs.release_tag }}"
