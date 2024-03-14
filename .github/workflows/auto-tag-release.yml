@@ -20,5 +20,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           major_version_tag_only: false
-        env:
-          github-token: ${{ secrets.GITHUB_TOKEN }}

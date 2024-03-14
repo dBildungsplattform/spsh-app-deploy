@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release Tag from the spsh_app_deploy'
+        description: 'Release Tag from the spsh_app_deploy repository'
         required: true
       target_instances:
-        description: "Decide where to do the rollout. Choose a Stage, a single instance or everywhere with 'all'"
+        description: "Decide where to do the rollout. Choose a Stage, a single instance or everywhere with 'all'. Default: all"
         required: true
         default: all
 
@@ -29,6 +29,7 @@ jobs:
     uses: ./.github/workflows/rollout-release.yml
     with:
       instance_name: spsh-staging-schulportal
+      frontend_hostname: "spsh.staging.spsh.dbildungsplattform.de"
       release_tag: ${{ github.event.inputs.release_tag }}
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
@@ -36,9 +37,8 @@ jobs:
       RC_WEBHOOK:  ${{ secrets.RC_WEBHOOK }} 
 
   # approve_prod:
-  #   if: ${{ !failure() }}
   #   needs:
-  #     - spsh-staging
+  #     - spsh-staging-schulportal
   #   environment: approve_prod
   #   runs-on: ubuntu-latest
   #   steps:
@@ -53,6 +53,7 @@ jobs:
   #     uses: ./.github/workflows/rollout-release.yml
   #     with:
   #       instance_name: spsh-prod-schulportal
+  #       frontend_hostname: "spsh.prod.spsh.dbildungsplattform.de"
   #       release_tag: ${{ github.event.inputs.release_tag }}
   #     secrets:
   #       token: ${{ secrets.GITHUB_TOKEN }}

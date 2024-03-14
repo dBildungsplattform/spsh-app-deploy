@@ -12,7 +12,7 @@ releases:
     chart: ./charts/spsh-init
     namespace: spsh
     valueFiles: 
-      - ./config/helm-charts/staging/general/values.yml
+      - ./config/helm-charts/prod/general/values.yml
     createNamespace: true
     wait: true
   dbildungs-iam-keycloak:
@@ -20,23 +20,23 @@ releases:
     chartVersion: 8.8.12
     namespace: spsh
     valueFiles:
-      - ./config/helm-charts/staging/general/values.yml
-      - ./config/helm-charts/staging/dbildungs-iam-keycloak/values.yml
+      - ./config/helm-charts/prod/general/values.yml
+      - ./config/helm-charts/prod/dbildungs-iam-keycloak/values.yml
     wait: true 
   schulportal-client:
     chart: dbildungsplattform/schulportal-client
     chartVersion: 8.8.12
     namespace: spsh
     valueFiles:
-      - ./config/helm-charts/staging/general/values.yml
-      - ./config/helm-charts/staging/dbildungs-iam-client/values.yml
+      - ./config/helm-charts/prod/general/values.yml
+      - ./config/helm-charts/prod/dbildungs-iam-client/values.yml
   dbildungs-iam-server:
     chart: dbildungsplattform/dbildungs-iam-server
     chartVersion: 8.8.12
     namespace: spsh
     valueFiles:
-      - ./config/helm-charts/staging/general/values.yml
-      - ./config/helm-charts/staging/dbildungs-iam-server/values.yml
+      - ./config/helm-charts/prod/general/values.yml
+      - ./config/helm-charts/prod/dbildungs-iam-server/values.yml
 
 repositories:
   dbildungsplattform: https://dbildungsplattform.github.io/helm-charts-registry/

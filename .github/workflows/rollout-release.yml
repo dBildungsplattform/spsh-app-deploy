@@ -24,12 +24,12 @@ permissions:
 jobs:
   rollout:
     runs-on: 'ubuntu-latest'
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        concurrency:
+          group: ${{ inputs.instance_name }}
+          cancel-in-progress: true
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # ref: "${{ inputs.release_tag }}"
@@ -48,7 +48,6 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
-
       # let action fail on error
       # The Helm Charts are all deployed at once 
       - name: Deploy Release via Helm Compose 
@@ -56,14 +55,12 @@ jobs:
         run: |
           helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
 
-    # tests:
-    #   runs-on: 'ubuntu-latest'
-    #   needs: 
-    #     - release
-    #   env:
-    #     GITHUB_TOKEN: ${{ github.token }}
-    #     KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
-    #   steps:
-    #     uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
-    #     with:
-    #       frontendHostname: "spsh.staging.spsh.dbildungsplattform.de"
+    tests:
+      runs-on: 'ubuntu-latest'
+      needs: 
+        - rollout
+      steps:
+      - name: Playwright Tests
+        uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@1
+        with:
+          frontendHostname: ${{ inputs.frontend_hostname }}
