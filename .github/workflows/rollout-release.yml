@@ -55,12 +55,9 @@ jobs:
         run: |
           helm compose up --file $(pwd)/instances/${{ inputs.instance_name }}.yml
 
-  tests:
-    runs-on: 'ubuntu-latest'
+  tests_playwright:
     needs: 
       - rollout
-    steps:
-    - name: Playwright Tests
-      uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@1
-      with:
-        frontendHostname: ${{ inputs.frontend_hostname }}
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@1
+    with:
+      frontendHostname: ${{ inputs.frontend_hostname }}
