@@ -1,4 +1,4 @@
-name: Delete Kubernetes Namespace manually
+name: Delete Namespace and Databases manually
 
 on:
   workflow_dispatch:
