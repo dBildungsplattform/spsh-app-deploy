@@ -155,7 +155,8 @@ jobs:
           LIST_OF_HELM_CHARTS_IN_NAMESPACE="$(helm ls \
           --namespace ${{ inputs.namespace }} \
           --kubeconfig $(pwd)/kubeconfig \
-          --short)"
+          --short \
+          --all)"
 
           # Check if list of installed Helm-Charts is empty 
           if [ -z "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" ]; then
@@ -164,7 +165,8 @@ jobs:
             helm uninstall \
               $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
               --namespace ${{ inputs.namespace }} \
-              --kubeconfig $(pwd)/kubeconfig
+              --kubeconfig $(pwd)/kubeconfig \
+              --wait
           fi
 
       - name: Create dbildungs-iam-server secret
@@ -249,5 +251,6 @@ jobs:
       - create_lowercase_ingress_prefix
       - deployment
     uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
+    secrets: inherit
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
