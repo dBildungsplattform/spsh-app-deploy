@@ -1,6 +1,0 @@
-apiVersion: v2
-name: spsh-init
-description: Helm-Chart for spsh-init
-type: application
-version: 0.0.1
-appVersion: ""
