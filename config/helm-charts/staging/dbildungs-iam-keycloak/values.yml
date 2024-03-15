@@ -1,4 +1,0 @@
-auth: 
-  existingSecret: dbildungs-iam-keycloak 
-database:
-  name: dbildungs_iam_keycloak

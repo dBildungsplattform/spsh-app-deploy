@@ -1,6 +1,0 @@
-auth: 
-  existingSecret: dbildungs-iam-server
-database:
-  name: dbildungs_iam_server
-seeding:
-  enabled: false
