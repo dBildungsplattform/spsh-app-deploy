@@ -1,4 +1,4 @@
-name: Delete dev namespace manually
+name: Delete Namespace and Databases manually
 
 on:
   workflow_dispatch:
