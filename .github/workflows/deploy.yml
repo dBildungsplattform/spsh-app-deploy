@@ -132,20 +132,20 @@ jobs:
         run: |
           kubectl create namespace ${{ inputs.namespace }} || true
 
-      - name: Download dbildungs_iam_server Helm chart
-        run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
-          tar -zxvf ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+      # - name: Download dbildungs_iam_server Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+      #     tar -zxvf ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      - name: Download schulportal_client Helm chart
-        run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
-          tar -zxvf ${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+      # - name: Download schulportal_client Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+      #     tar -zxvf ${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      - name: Download dbildungs_iam_keycloak Helm chart
-        run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
-          tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+      # - name: Download dbildungs_iam_keycloak Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+      #     tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
       # On branches the ticket number is used as image tag. To ensure the pods are restarted
       # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
@@ -208,12 +208,17 @@ jobs:
             --set auth.existingSecret="psql-config-secret" \
             --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.server_db_name }}
       
+      - name: Helm add repo dbilungsplattform
+        run: |
+          helm repo add dbildungsplattform https://dbildungsplattform.github.io/helm-charts-registry/
+
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
       - name: Deploy dbildungs_iam_keycloak Helm chart
         run: |
           helm upgrade --install \
             dbildungs-iam-keycloak \
-            dbildungs-iam-keycloak \
+            dbildungsplattform/dbildungs-iam-keycloak \
+            --version ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }} \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-keycloak" \
             --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
@@ -225,7 +230,8 @@ jobs:
         run: |
           helm upgrade --install \
             schulportal-client \
-            schulportal-client \
+            dbildungsplattform/schulportal-client \
+            --version ${{ needs.find_schulportal_client_helm_chart_tag.outputs.helm_chart_tagname }} \
             --namespace ${{ inputs.namespace }} \
             --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de
 
@@ -233,7 +239,8 @@ jobs:
         run: |
           helm upgrade --install \
             dbildungs-iam-server \
-            dbildungs-iam-server \
+            dbildungsplattform/dbildungs-iam-server \
+            --version ${{ needs.find_dbildungs_iam_server_helm_chart_tag.outputs.helm_chart_tagname }} \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
             --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
