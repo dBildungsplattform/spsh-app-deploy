@@ -74,7 +74,7 @@ jobs:
         run: |
           # keycloak db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
-          temp=$(echo "spsh_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
+          temp=$(echo "dbildungs_iam_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
           echo "keycloak_db_name=$temp" >> $GITHUB_OUTPUT
 
@@ -88,7 +88,7 @@ jobs:
         run: |
           # server db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
-          temp=$(echo "spsh_database_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
+          temp=$(echo "dbildungs_iam_server_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
           echo "server_db_name=$temp" >> $GITHUB_OUTPUT
 
