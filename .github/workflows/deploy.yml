@@ -249,7 +249,7 @@ jobs:
     needs:
       - create_lowercase_ingress_prefix
       - deployment
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@${{ github.event.pull_request.head.ref || 'main' }}
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@${{ needs.branch_meta.outputs.ticket || 'main' }}
     secrets: inherit
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
