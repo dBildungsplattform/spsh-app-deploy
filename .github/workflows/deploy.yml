@@ -281,4 +281,4 @@ jobs:
     secrets: inherit
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
-      playwright_branch: ${{ fromJSON('{"value":"main"}').value || needs.determine_playwright_branch.outputs.playwright_branch }}
+      playwright_branch: ${{ needs.determine_playwright_branch.outputs.playwright_branch || "main" }}
