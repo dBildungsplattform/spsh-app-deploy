@@ -253,7 +253,7 @@ jobs:
             --wait
   
   determine_playwright_branch:
-    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name,'dependabot/') }}
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name,'dependabot/') && github.ref_name != "main"}}
     runs-on: ubuntu-latest
     outputs:
       playwright_branch: ${{ steps.check_branch.outputs.playwright_branch }}
