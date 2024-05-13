@@ -277,7 +277,7 @@ jobs:
       - create_lowercase_ingress_prefix
       - deployment
       - determine_playwright_branch
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@DBP-757-Playwright-tests
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
     secrets: inherit
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
