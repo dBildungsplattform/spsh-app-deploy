@@ -26,17 +26,10 @@ on:
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
-      playwright_branch:
-        required: false
-        description: The name of the branch to be used for running Playwright tests. It must be "main" or in the format "<project>-<ticketnumber>", e.g., "spsh-130".
-        default: main
-        type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
         required: true
     
-
-
 permissions:
   contents: read
 
