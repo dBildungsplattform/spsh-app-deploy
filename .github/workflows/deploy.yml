@@ -260,9 +260,9 @@ jobs:
         run: |
           playwright_branch="${{ github.ref_name }}"
           if git ls-remote --heads --exit-code https://github.com/dBildungsplattform/schulportal-testautomatisierung $playwright_branch &> /dev/null; then
-            echo "playwright_branch=$playwright_branch" >> $GITHUB_ENV
+            echo "playwright_branch=$playwright_branch" >> $GITHUB_OUTPUT
           else
-            echo "playwright_branch=main" >> $GITHUB_ENV
+            echo "playwright_branch=main" >> $GITHUB_OUTPUT
           fi
           echo "Branch exists: $?"
 
