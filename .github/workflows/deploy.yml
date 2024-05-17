@@ -254,16 +254,16 @@ jobs:
       - name: Check current branch
         run: |
           echo "Current branch: ${{ github.ref_name }}"
-          
       - name: Check if Playwright branch exists
         id: check_branch
         run: |
           playwright_branch="${{ github.ref_name }}"
-          if git ls-remote --heads https://github.com/dBildungsplattform/schulportal-testautomatisierung $playwright_branch &> /dev/null; then
+          if git ls-remote --heads --exit-code https://github.com/dBildungsplattform/schulportal-testautomatisierung $playwright_branch &> /dev/null; then
             echo "playwright_branch=$playwright_branch" >> $GITHUB_OUTPUT
           else
             echo "playwright_branch=main" >> $GITHUB_OUTPUT
           fi
+          echo "Branch exists: $?"
 
   run_playwright_tests:
     needs:
@@ -274,5 +274,4 @@ jobs:
     secrets: inherit
     with:
       frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
-      playwright_branch: ${{ needs.determine_playwright_branch.outputs.playwright_branch  || fromJSON('{"value":"main"}').value  }}
-      
+      playwright_branch: ${{ needs.determine_playwright_branch.outputs.playwright_branch || 'main' }}
