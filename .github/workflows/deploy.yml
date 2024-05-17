@@ -259,7 +259,7 @@ jobs:
         id: check_branch
         run: |
           playwright_branch="${{ github.ref_name }}"
-          if git ls-remote --heads https://github.com/dBildungsplattform/schulportal-testautomatisierung $playwright_branch &> /dev/null; then
+          if git ls-remote --heads --exit-code https://github.com/dBildungsplattform/schulportal-testautomatisierung $playwright_branch &> /dev/null; then
             echo "playwright_branch=$playwright_branch" >> $GITHUB_OUTPUT
           else
             echo "playwright_branch=main" >> $GITHUB_OUTPUT
