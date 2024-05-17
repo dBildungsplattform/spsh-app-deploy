@@ -246,7 +246,7 @@ jobs:
             --wait
   
   determine_playwright_branch:
-    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name,'dependabot/') }}
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name,'dependabot/')}}
     runs-on: ubuntu-latest
     outputs:
       playwright_branch: ${{ steps.check_branch.outputs.playwright_branch }}
@@ -254,7 +254,6 @@ jobs:
       - name: Check current branch
         run: |
           echo "Current branch: ${{ github.ref_name }}"
-
       - name: Check if Playwright branch exists
         id: check_branch
         run: |
