@@ -26,6 +26,11 @@ on:
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
+      dbildungs_iam_ldap_branch:
+        required: true
+        description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        default: main
+        type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
         required: true
@@ -49,6 +54,13 @@ jobs:
       chart_name: "schulportal-client"
 
   find_dbildungs_iam_keycloak_helm_chart_tag:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
+    with:
+      github_repository: "dBildungsplattform/helm-charts-registry"
+      branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
+      chart_name: "dbildungs-iam-keycloak"
+
+  find_dbildungs_iam_ldap_helm_chart_tag:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
@@ -116,9 +128,9 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
-          repository: 'dBildungsplattform/spsh-app-deploy'
+          # repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
-          # ref: "<branch_name>"
+          ref: "DBP-799-openldap-image-helm-chart"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
@@ -148,6 +160,11 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
+      - name: Download dbildungs_iam_ldap Helm chart
+        run: |
+          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+          tar -zxvf ${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+
       # On branches the ticket number is used as image tag. To ensure the pods are restarted
       # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
       # We also need to uninstall all pods to savely recreate the database
@@ -176,6 +193,10 @@ jobs:
       - name: Create dbildungs-iam-keycloak secret
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
+
+      - name: Create dbildungs-iam-ldap secret
+        run: |
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
 
       - name: Create Database for dbildungs-iam-keycloak
         run: |
@@ -222,6 +243,15 @@ jobs:
             --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.keycloak_db_name }} \
             --set database.username=spshdeveloper \
+            --wait
+
+      - name: Deploy dbildungs_iam_ldap Helm chart
+        run: |
+          helm upgrade --install \
+            dbildungs-iam-ldap \
+            dbildungs-iam-ldap \
+            --namespace ${{ inputs.namespace }} \
+            --set global.existingSecret="dbildungs-iam-ldap" \
             --wait
 
       - name: Deploy schulportal_client Helm chart
