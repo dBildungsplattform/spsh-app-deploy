@@ -189,7 +189,9 @@ jobs:
 
       - name: Create dbildungs-iam-server secret
         run: |
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
+          ls -la
+          pwd
+          kubectl --namespace=${{ inputs.namespace }} apply -f ${{ github.workspace }}/dbildungs-iam-server-secret-dev.yaml
 
       - name: Create dbildungs-iam-keycloak secret
         run: |
