@@ -64,8 +64,8 @@ jobs:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@2
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
-      branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
-      chart_name: "dbildungs-iam-keycloak"
+      branch: ${{ inputs.dbildungs_iam_ldap_branch }}
+      chart_name: "dbildungs-iam-ldap"
 
   create_ingress_prefix:
     uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@2
