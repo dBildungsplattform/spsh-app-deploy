@@ -129,7 +129,7 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
-          # repository: 'dBildungsplattform/spsh-app-deploy'
+          repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
           ref: "DBP-799-openldap-image-helm-chart"
 
@@ -189,9 +189,7 @@ jobs:
 
       - name: Create dbildungs-iam-server secret
         run: |
-          ls -la
-          pwd
-          kubectl --namespace=${{ inputs.namespace }} apply -f ${{ github.workspace }}/dbildungs-iam-server-secret-dev.yaml
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
 
       - name: Create dbildungs-iam-keycloak secret
         run: |
