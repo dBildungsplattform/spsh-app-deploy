@@ -1,0 +1,6 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: dbildungs-iam-ldap-config-modify
+spec:
+  itemPath: "vaults/spsh-dev-schulportal/items/dbildungs-iam-ldap-config-modify"
