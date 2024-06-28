@@ -199,6 +199,14 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
 
+      - name: Create dbildungs-iam-ldap secret
+        run: |
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
+
+      - name: Create dbildungs-iam-ldap secret
+        run: |
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
+
       - name: Create Database for dbildungs-iam-keycloak
         run: |
           # Generate timestamp for job name uniqueness
