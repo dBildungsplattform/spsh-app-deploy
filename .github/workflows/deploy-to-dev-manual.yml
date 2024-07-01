@@ -28,9 +28,10 @@ on:
         description: "DB-Seeding (Default: chart_value)"
         default: "chart_value"
         type: choice
-          - "chart_value"
-          - "true"
-          - "false"
+        options:
+        - "chart_value"
+        - "true"
+        - "false"
 
 jobs:
   create_branch_identifier:
