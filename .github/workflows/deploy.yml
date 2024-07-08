@@ -131,7 +131,7 @@ jobs:
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
-          # ref: ""
+          # ref: "<branch_name>"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
