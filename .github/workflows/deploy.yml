@@ -228,16 +228,6 @@ jobs:
             --set auth.existingSecret="psql-config-secret" \
             --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.keycloak_db_name }}
 
-      # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
-      - name: Deploy dbildungs_iam_ldap Helm chart
-        run: |
-          helm upgrade --install \
-            dbildungs-iam-ldap \
-            dbildungs-iam-ldap \
-            --namespace ${{ inputs.namespace }} \
-            --set global.existingSecret="dbildungs-iam-ldap" \
-            --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
-            --wait
 
       - name: Create Database for dbildungs-iam-server
         run: |
@@ -269,6 +259,17 @@ jobs:
             --set database.username=spshdeveloper \
             --wait
       
+      # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
+      - name: Deploy dbildungs_iam_ldap Helm chart
+        run: |
+          helm upgrade --install \
+            dbildungs-iam-ldap \
+            dbildungs-iam-ldap \
+            --namespace ${{ inputs.namespace }} \
+            --set global.existingSecret="dbildungs-iam-ldap" \
+            --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
+            --wait
+
       - name: Deploy schulportal_client Helm chart
         run: |
           helm upgrade --install \
