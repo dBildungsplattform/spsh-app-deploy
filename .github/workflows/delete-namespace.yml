@@ -37,7 +37,7 @@ jobs:
       - id: create_dbildungs_iam_server_db_name
         shell: bash
         run: |
-          # spsh-app db name creation at a single point
+          # dbildungs-iam-server db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for postgresql db name
           temp=$(echo "dbildungs_iam_server_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
@@ -109,7 +109,7 @@ jobs:
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
           --kubeconfig $(pwd)/kubeconfig \
-          --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.keycloak_db_name }} \
+          --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.dbildungs_iam_keycloak_db_name }} \
           --wait
 
         # Wait for Job to be completed
@@ -126,7 +126,7 @@ jobs:
         DATE=$(date +%Y%m%d%H%M%S)
 
         # Define job name for dbildungs_iam_server database deletion job
-        HELM_SERVER_DB_DELETION_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
+        HELM_SERVER_DB_DELETION_JOB_NAME="psql-db-${DATE}-server-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
         # Deploy dbildungs_iam_server database deletion job
         helm upgrade --install \
