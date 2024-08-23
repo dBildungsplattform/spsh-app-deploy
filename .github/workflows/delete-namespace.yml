@@ -18,30 +18,30 @@ jobs:
   create_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
-      dbildungs_iam_keycloak_db_name: ${{ steps.create_dbildungs_iam_keycloak_db_name.outputs.dbildungs_iam_keycloak_db_name }}
+      db_name: ${{ steps.create_db_name.outputs.db_name }}
     steps:
-      - id: create_dbildungs_iam_keycloak_db_name
+      - id: create_db_name
         shell: bash
         run: |
           # dbildungs-iam-keycloak db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for postgresql db name
           temp=$(echo "dbildungs_iam_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "dbildungs_iam_keycloak_db_name=$temp" >> $GITHUB_OUTPUT
+          echo "db_name=$temp" >> $GITHUB_OUTPUT
 
   create_dbildungs_iam_server_db_name:
     runs-on: ubuntu-latest
     outputs:
-      dbildungs_iam_server_db_name: ${{ steps.create_dbildungs_iam_server_db_name.outputsdbildungs_iam_server_db_name }}
+      db_name: ${{ steps.create_db_name.outputs.db_name }}
     steps:
-      - id: create_dbildungs_iam_server_db_name
+      - id: create_db_name
         shell: bash
         run: |
           # dbildungs-iam-server db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for postgresql db name
           temp=$(echo "dbildungs_iam_server_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "dbildungs_iam_server_db_name=$temp" >> $GITHUB_OUTPUT
+          echo "db_name=$temp" >> $GITHUB_OUTPUT
 
   create_ticket_nr_variable:
     runs-on: ubuntu-latest
@@ -109,7 +109,7 @@ jobs:
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
           --kubeconfig $(pwd)/kubeconfig \
-          --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.dbildungs_iam_keycloak_db_name }} \
+          --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
           --wait
 
         # Wait for Job to be completed
@@ -135,7 +135,7 @@ jobs:
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
           --kubeconfig $(pwd)/kubeconfig \
-          --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.dbildungs_iam_server_db_name }} \
+          --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }} \
           --wait
 
         # Wait for Job to be completed
