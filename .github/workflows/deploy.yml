@@ -85,30 +85,30 @@ jobs:
   create_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
-      db_name: ${{ steps.create_db_name.outputs.db_name }}
+      keycloak_db_name: ${{ steps.create_dbildungs_iam_keycloak_db_name.outputs.keycloak_db_name }}
     steps:
-      - id: create_db_name
+      - id: create_dbildungs_iam_keycloak_db_name
         shell: bash
         run: |
-          # dbildungs_iam_keycloak db name creation at a single point
+          # keycloak db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
           temp=$(echo "dbildungs_iam_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "db_name=$temp" >> $GITHUB_OUTPUT
+          echo "keycloak_db_name=$temp" >> $GITHUB_OUTPUT
 
   create_dbildungs_iam_server_db_name:
     runs-on: ubuntu-latest
     outputs:
-     db_name: ${{ steps.create_db_name.outputs.db_name }}
+     server_db_name: ${{ steps.create_dbildungs_iam_server_db_name.outputs.server_db_name }}
     steps:
-      - id: create_db_name
+      - id: create_dbildungs_iam_server_db_name
         shell: bash
         run: |
-          # dbildungs_iam_server db name creation at a single point
+          # server db name creation at a single point
           # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
           temp=$(echo "dbildungs_iam_server_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "db_name=$temp" >> $GITHUB_OUTPUT
+          echo "server_db_name=$temp" >> $GITHUB_OUTPUT
 
   deployment:
     needs: 
@@ -226,7 +226,7 @@ jobs:
             ./charts/postgres_config \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
-            --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }}
+            --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.keycloak_db_name }}
 
 
       - name: Create Database for dbildungs-iam-server
@@ -243,7 +243,7 @@ jobs:
             ./charts/postgres_config \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
-            --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }}
+            --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.server_db_name }}
 
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
       - name: Deploy dbildungs_iam_keycloak Helm chart
