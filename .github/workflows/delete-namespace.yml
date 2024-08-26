@@ -15,33 +15,33 @@ permissions:
 
     
 jobs:
-  create_keycloak_db_name:
+  create_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
-      keycloak_db_name: ${{ steps.create_keycloak_db_name.outputs.keycloak_db_name }}
+      db_name: ${{ steps.create_db_name.outputs.db_name }}
     steps:
-      - id: create_keycloak_db_name
+      - id: create_db_name
         shell: bash
         run: |
-          # keycloak db name creation at a single point
-          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
-          temp=$(echo "spsh_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
+          # dbildungs-iam-keycloak db name creation at a single point
+          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for postgresql db name
+          temp=$(echo "dbildungs_iam_keycloak_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "keycloak_db_name=$temp" >> $GITHUB_OUTPUT
+          echo "db_name=$temp" >> $GITHUB_OUTPUT
 
-  create_spsh_app_db_name:
+  create_dbildungs_iam_server_db_name:
     runs-on: ubuntu-latest
     outputs:
-      spsh_app_db_name: ${{ steps.create_spsh_app_db_name.outputs.spsh_app_db_name }}
+      db_name: ${{ steps.create_db_name.outputs.db_name }}
     steps:
-      - id: create_spsh_app_db_name
+      - id: create_db_name
         shell: bash
         run: |
-          # spsh-app db name creation at a single point
-          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max lenght for postgresql db name
-          temp=$(echo "spsh_database_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
+          # dbildungs-iam-server db name creation at a single point
+          # Change every "." and "-" into "_", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for postgresql db name
+          temp=$(echo "dbildungs_iam_server_${{ inputs.namespace }}" | tr - _ | tr \. _ | sed 's/[^a-zA-Z0-9_]//g' | cut -c1-63)
           echo "before" ${{ inputs.namespace }} "after" $temp
-          echo "spsh_app_db_name=$temp" >> $GITHUB_OUTPUT
+          echo "db_name=$temp" >> $GITHUB_OUTPUT
 
   create_ticket_nr_variable:
     runs-on: ubuntu-latest
@@ -55,10 +55,10 @@ jobs:
           [[ ${{ inputs.namespace }} =~ $regex ]]
           echo "ticket_nr=$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])" >> $GITHUB_OUTPUT
 
-  delete_namespace:
+  delete_databases_and_namespace:
     needs: 
-      - create_keycloak_db_name
-      - create_spsh_app_db_name
+      - create_dbildungs_iam_keycloak_db_name
+      - create_dbildungs_iam_server_db_name
       - create_ticket_nr_variable
     runs-on: ubuntu-latest
     steps:
@@ -85,7 +85,7 @@ jobs:
 
         # Check if list of installed Helm-Charts is empty 
         if [ -z "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" ]; then
-          echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping uninstall"
+          echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping helm uninstall"
         else
           helm uninstall \
             $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
@@ -94,22 +94,22 @@ jobs:
             --wait
         fi
 
-    - name: Delete Keycloak instance database
+    - name: Delete dbildungs_iam_keycloak database
       run: | 
         # Generate timestamp for job name uniqueness
         DATE=$(date +%Y%m%d%H%M%S)
 
-        # Define job name for Keycloak database deletion job
-        HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
+        # Define job name for dbildungs_iam_keycloak database deletion job
+        HELM_KEYCLOAK_DB_DELETION_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
-        # Deploy Keycloak database deletion job
+        # Deploy dbildungs_iam_keycloak database deletion job
         helm upgrade --install \
-          $HELM_KEYCLOAK_DELETION_JOB_NAME \
+          $HELM_KEYCLOAK_DB_DELETION_JOB_NAME \
           ./charts/postgres_delete_databases \
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
           --kubeconfig $(pwd)/kubeconfig \
-          --set database.name=${{ needs.create_keycloak_db_name.outputs.keycloak_db_name }} \
+          --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
           --wait
 
         # Wait for Job to be completed
@@ -118,24 +118,24 @@ jobs:
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
-          job $HELM_KEYCLOAK_DELETION_JOB_NAME
+          job $HELM_KEYCLOAK_DB_DELETION_JOB_NAME
 
-    - name: Delete SPSH instance database
+    - name: Delete dbildungs_iam_server database
       run: | 
         # Generate timestamp for job name uniqueness
         DATE=$(date +%Y%m%d%H%M%S)
 
-        # Define job name for SPSH-App database deletion job
-        HELM_KEYCLOAK_DELETION_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
+        # Define job name for dbildungs_iam_server database deletion job
+        HELM_SERVER_DB_DELETION_JOB_NAME="psql-db-${DATE}-server-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
 
-        # Deploy SPSH-App database deletion job
+        # Deploy dbildungs_iam_server database deletion job
         helm upgrade --install \
-          $HELM_KEYCLOAK_DELETION_JOB_NAME \
+          $HELM_SERVER_DB_DELETION_JOB_NAME \
           ./charts/postgres_delete_databases \
           --namespace ${{ inputs.namespace }} \
           --set auth.existingSecret="psql-config-secret" \
           --kubeconfig $(pwd)/kubeconfig \
-          --set database.name=${{ needs.create_spsh_app_db_name.outputs.spsh_app_db_name }} \
+          --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }} \
           --wait
 
         # Wait for Job to be completed
@@ -144,7 +144,7 @@ jobs:
           --kubeconfig $(pwd)/kubeconfig \
           --for=condition=complete \
           --timeout=120s \
-          job $HELM_KEYCLOAK_DELETION_JOB_NAME
+          job $HELM_SERVER_DB_DELETION_JOB_NAME
 
     - name: Clean up database deletion Helm-Charts and its jobs from cluster
       run: | 
@@ -156,7 +156,7 @@ jobs:
 
         # Check if list of installed Helm-Charts is empty 
         if [ -z "$LIST_OF_HELM_CHARTS_IN_NAMESPACE" ]; then
-          echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping uninstall"
+          echo "No Helm-Charts found in namespace ${{ inputs.namespace }}, skipping helm uninstall"
         else
           helm uninstall \
             $LIST_OF_HELM_CHARTS_IN_NAMESPACE \
