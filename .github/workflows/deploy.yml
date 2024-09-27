@@ -246,18 +246,18 @@ jobs:
             --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }}
 
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
-      - name: Deploy dbildungs_iam_keycloak Helm chart
-        run: |
-          helm upgrade --install \
-            dbildungs-iam-keycloak \
-            dbildungs-iam-keycloak \
-            --namespace ${{ inputs.namespace }} \
-            --set auth.existingSecret="dbildungs-iam-keycloak" \
-            --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
-            --set database.username=spshdeveloper \
-            --wait
+      # - name: Deploy dbildungs_iam_keycloak Helm chart
+      #   run: |
+      #     helm upgrade --install \
+      #       dbildungs-iam-keycloak \
+      #       dbildungs-iam-keycloak \
+      #       --namespace ${{ inputs.namespace }} \
+      #       --set auth.existingSecret="dbildungs-iam-keycloak" \
+      #       --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
+      #       --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
+      #       --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
+      #       --set database.username=spshdeveloper \
+      #       --wait
       
       # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
       - name: Deploy dbildungs_iam_ldap Helm chart
