@@ -51,7 +51,7 @@ jobs:
         id: getMainByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@cedef2faf69cb7c55b285bad07688d04430b7ada #1.2.4
         with:
-          releaseNameRegEx: "${{ inputs.chart_name }}-0.0.1"
+          releaseNameRegEx: "${{ inputs.chart_name }}-0.0.1-"
           doNotFailIfNotFound: 'true'
           searchLimit: 100000
           repo: "${{ inputs.github_repository }}"
