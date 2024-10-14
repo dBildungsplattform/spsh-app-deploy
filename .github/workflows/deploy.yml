@@ -45,28 +45,28 @@ permissions:
 
 jobs:
   find_dbildungs_iam_server_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@5
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-0000-fix-if-condition
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_server_branch }}
       chart_name: "dbildungs-iam-server"
 
   find_schulportal_client_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@5
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-0000-fix-if-condition
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.schulportal_client_branch }}
       chart_name: "schulportal-client"
 
   find_dbildungs_iam_keycloak_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@5
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-0000-fix-if-condition
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
       chart_name: "dbildungs-iam-keycloak"
 
   find_dbildungs_iam_ldap_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@5
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@DBP-0000-fix-if-condition
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
