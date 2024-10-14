@@ -15,7 +15,7 @@ on:
         type: string
       schulportal_client_branch:
         required: true
-        description: "dbildungs_iam_client Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        description: "schulportal_client Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
       dbildungs_iam_keycloak_branch:
