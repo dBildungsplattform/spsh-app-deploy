@@ -31,7 +31,7 @@ jobs:
       helm_chart_tagname: ${{ steps.set_tagname_as_output.outputs.helm_chart_tagname }}
     steps:
       - name: Search ${{ inputs.chart_name }} and get Helm Chart release by ticket name with releaseNameRegEx action
-        if: ${{ github.ref_name != 'main' }}
+        if: ${{ inputs.branch != 'main' }}
         id: getByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@cedef2faf69cb7c55b285bad07688d04430b7ada  #1.2.4
         with:
@@ -41,13 +41,13 @@ jobs:
           repo: "${{ inputs.github_repository }}"
     
       - name: Set Branch Helm Chart tagname as variable for ${{ inputs.chart_name }}
-        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name != '' && github.ref_name != 'main' }}
+        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name != '' && inputs.branch != 'main' }}
         run: |
           echo "${{ steps.getByReleaseNameRegEx.outputs.tag_name }}"
           echo "helm_chart_tagname=${{ steps.getByReleaseNameRegEx.outputs.tag_name }}" >> $GITHUB_ENV
       
       - name: Check if a Branch Helm Chart was found, if not, take last from main
-        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name == '' || github.ref_name == 'main'  }}
+        if: ${{ steps.getByReleaseNameRegEx.outputs.tag_name == '' || inputs.branch == 'main'  }}
         id: getMainByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@cedef2faf69cb7c55b285bad07688d04430b7ada #1.2.4
         with:
