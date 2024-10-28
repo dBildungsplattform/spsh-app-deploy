@@ -29,7 +29,7 @@ jobs:
 
   deletion_successful:
     needs:
-      - delete_namespace
+      - delete_databases_and_namespace
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deletion of namespace" ${{ github.event.inputs.namespace }} "done" 
