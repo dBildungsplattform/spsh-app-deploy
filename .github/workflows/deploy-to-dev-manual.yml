@@ -69,7 +69,7 @@ jobs:
     needs:
       - check_namespace_input
       - create_branch_identifier
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@5
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@DBP-1084-rollout-to-namespaces-do-not-delete-dbs
     with:
       dbildungs_iam_server_branch: ${{ github.event.inputs.dbildungs_iam_server_branch }}
       schulportal_client_branch: ${{ github.event.inputs.schulportal_client_branch }}
