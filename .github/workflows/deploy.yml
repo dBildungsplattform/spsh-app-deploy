@@ -221,7 +221,7 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
 
-      - name: Recreate Database for dbildungs-iam-keycloak
+      - name: "Recreate Database for dbildungs-iam-keycloak - Deletion: ${{ inputs.database_deletion }}"
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
@@ -238,7 +238,7 @@ jobs:
             --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
             --set database.deletion=${{ inputs.database_deletion }}
 
-      - name: Recreate Database for dbildungs-iam-server
+      - name: "Recreate Database for dbildungs-iam-server - Deletion: ${{ inputs.database_deletion }}"
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
