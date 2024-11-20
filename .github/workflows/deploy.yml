@@ -36,6 +36,11 @@ on:
         description: "Enable Seeding (true, false, chart_value)"
         default: chart_value
         type: string
+      database_deletion:
+        required: false
+        description: "Decide whether Databases should be deleted or not"
+        default: true
+        type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
         required: true
@@ -136,7 +141,7 @@ jobs:
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
-          # ref: "<branch_name>"
+          ref: "DBP-1084-rollout-to-namespaces-do-not-delete-dbs"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
@@ -216,7 +221,7 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
 
-      - name: Create Database for dbildungs-iam-keycloak
+      - name: Recreate Database for dbildungs-iam-keycloak
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
@@ -224,16 +229,16 @@ jobs:
           # Define job name for Keycloak database creation job
           HELM_KEYCLOAK_DB_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
-          # Deploy Database for dbildungs-iam-keycloak
+          # Recreate Database for dbildungs-iam-keycloak
           helm upgrade --install \
             $HELM_KEYCLOAK_DB_JOB_NAME \
-            ./charts/postgres_config \
+            ./charts/postgres_recreate_databases \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }}
+            --set database.deletion=${{ inputs.database_deletion }}
 
-
-      - name: Create Database for dbildungs-iam-server
+      - name: Recreate Database for dbildungs-iam-server
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
@@ -241,13 +246,14 @@ jobs:
           # Define job name for SPSH-App database creation job
           HELM_SERVER_DB_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
-          # Deploy Database for SPSH-App 
+          # Recreate Database for SPSH-App 
           helm upgrade --install \
             $HELM_SERVER_DB_JOB_NAME \
-            ./charts/postgres_config \
+            ./charts/postgres_recreate_databases \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
             --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }}
+            --set database.deletion=${{ inputs.database_deletion }}
 
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
       - name: Deploy dbildungs_iam_keycloak Helm chart

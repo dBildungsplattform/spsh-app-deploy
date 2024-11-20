@@ -37,6 +37,14 @@ on:
         - "chart_value"
         - "true"
         - "false"
+      database_deletion:
+        required: true
+        description: "Delete Databases? Yes = true; No = false;"
+        default: "false"
+        type: choice
+        options:
+        - "true"
+        - "false"
 
 jobs:
   create_branch_identifier:
