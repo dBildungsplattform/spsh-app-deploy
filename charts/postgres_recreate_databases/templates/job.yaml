@@ -27,7 +27,7 @@ spec:
         - name: DB_NAME
           value: {{ .Values.database.name }}
         - name: DB_FORCE_DELETE
-          value: {{ .Values.database.deletion }}
+          value: "{{ .Values.database.deletion }}"
       volumes:
       - name: config-script-volume
         configMap:
