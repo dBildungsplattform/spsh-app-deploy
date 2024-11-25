@@ -10,7 +10,7 @@ data:
     if [ "$DB_FORCE_DELETE" = "true" ]; then
       echo "DROP DATABASE IF EXISTS $DB_NAME" | psql -d postgres -w
     else
-      echo "DB_FORCE_DELETE is not true. Create Database and User if they do not already exist."
+      echo "DB_FORCE_DELETE is not true. Progresses with creation of Database and User if they do not already exist."
     fi
     echo "Create owner of the DB"
     echo "SELECT 'CREATE USER spshdeveloper' WHERE NOT EXISTS (SELECT FROM pg_user WHERE usename = 'spshdeveloper')\gexec" | psql -d postgres -w
