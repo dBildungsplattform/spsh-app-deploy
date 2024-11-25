@@ -78,6 +78,7 @@ jobs:
       dbseeding: ${{ github.event.inputs.dbseeding }}
       namespace: ${{ needs.create_branch_identifier.outputs.namespace_from_branch }}
       user_name: spsh-bot
+      database_deletion: ${{ inputs.database_deletion }}
     secrets:
       SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
