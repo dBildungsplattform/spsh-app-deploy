@@ -23,3 +23,4 @@ data:
     echo "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME to spshdeveloper" | psql -d postgres -w
     echo "Executing optional custom command"
     echo "$DB_CUSTOM_COMMAND" | psql -d postgres -w
+    echo sleep 10m
