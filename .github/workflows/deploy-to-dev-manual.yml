@@ -53,8 +53,6 @@ jobs:
       branch: ${{ github.event.inputs.namespace }}
   
   check_namespace_input:
-    needs:
-      - create_branch_identifier
     runs-on: ubuntu-latest
     steps:
     - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234 or is exactly 'main'

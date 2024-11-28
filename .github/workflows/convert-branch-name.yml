@@ -22,6 +22,6 @@ jobs:
       - id: create_branch_identifier
         shell: bash
         run: |
-          temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | cut -c1-63)
+          temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | sed 's/\([[:alpha:]]*-[[:digit:]]*\).*/\1/' | cut -c1-63)
           echo "before" ${{ inputs.branch }} "after" $temp
           echo "namespace_from_branch=$temp" >> $GITHUB_OUTPUT
