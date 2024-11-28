@@ -48,7 +48,7 @@ on:
 
 jobs:
   create_branch_identifier:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy-branch-to-namespace.yml@2
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/convert-branch-name.yml@DBP-1084-rollout-to-namespaces-do-not-delete-dbs
     with:
       branch: ${{ github.event.inputs.namespace }}
   

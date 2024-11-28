@@ -77,15 +77,10 @@ jobs:
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
       chart_name: "dbildungs-iam-ldap"
 
-  create_ingress_prefix:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@2
-
   create_lowercase_ingress_prefix:
-    needs:
-    - create_ingress_prefix
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy-branch-to-namespace.yml@2
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/convert-branch-name.yml@DBP-1084-rollout-to-namespaces-do-not-delete-dbs
     with:
-      branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
+      branch: ${{ inputs.namespace }}
     
   recreate_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
@@ -197,28 +192,13 @@ jobs:
               --wait
           fi
 
-      - name: Create dbildungs-iam-server secret
+      - name: Create all secrets
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
-  
-      - name: Create dbildungs-iam-server-redis secret
-        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-redis-secret-dev.yaml
-
-      - name: Create dbildungs-iam-keycloak secret
-        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
-
-      - name: Create dbildungs-iam-ldap secret
-        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
-
-      - name: Create dbildungs-iam-ldap modify secret
-        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
-
-      - name: Create dbildungs-iam-ldap apply secret
-        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
 
       - name: "Recreate Database for dbildungs-iam-keycloak - Deletion: ${{ inputs.database_deletion }}"

@@ -1,5 +1,5 @@
 ---
-name: Deploy Branch to Namespace
+name: Convert Branch Name
 
 on:
   workflow_call:
