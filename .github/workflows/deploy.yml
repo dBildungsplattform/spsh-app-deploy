@@ -273,6 +273,8 @@ jobs:
             dbildungs-iam-server \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
+            --set redis-cluster.existingSecret="dbildungs-iam-server-redis" \
+            --set redis.auth.existingSecret="dbildungs-iam-server-redis" \
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set keycloakHostname=${{ inputs.namespace }}-keycloak.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
