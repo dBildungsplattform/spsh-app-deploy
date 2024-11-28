@@ -12,7 +12,7 @@ configMap:
   defaultMode: 457
 database:
   name: ""
-  deletion: "true"
+  deletion: "false"
 auth:
   # existingSecret: Refers to a secret already present in the cluster, which is required for the authentication and configuration of the database setup tasks.
   existingSecret: ""

@@ -39,7 +39,7 @@ on:
       database_deletion:
         required: false
         description: "Decide whether Databases should be deleted or not"
-        default: true
+        default: false
         type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
