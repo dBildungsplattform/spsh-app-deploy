@@ -23,8 +23,8 @@ jobs:
         shell: bash
         run: |
           temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | sed 's/\([[:alpha:]]*-[[:digit:]]*-[[:digit:]]*\).*/\1/' | sed 's/-*$//' | cut -c1-63)
-          echo "before:" ${{ inputs.branch }} " -- after: $temp"
-          if echo $temp | grep -qE '^[[:alpha:]]+-[[:digit:]]+(-[[:digit:]]+)?$' || [ "$temp" == "mainfortesting" ]; then
+          echo "before:" ${{ inputs.branch }} "-- after: $temp"
+          if echo $temp | grep -qE '^[[:alpha:]]+-[[:digit:]]+(-[[:digit:]]+)?$' || [ '$temp' == 'main' ]; then
             echo "namespace_from_branch=$temp" >> $GITHUB_OUTPUT
           else
             echo "Pattern does not match and branch is not main"
