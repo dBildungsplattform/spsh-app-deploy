@@ -36,11 +36,6 @@ on:
         description: "Enable Seeding (true, false, chart_value)"
         default: chart_value
         type: string
-      database_recreation:
-        required: false
-        description: "Decide whether databases should be recreated or not"
-        default: false
-        type: string
     secrets:
       SPSH_DEV_KUBECONFIG:
         required: true
@@ -76,8 +71,18 @@ jobs:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
       chart_name: "dbildungs-iam-ldap"
+
+  create_ingress_prefix:
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/get-branch-meta.yml@2
+
+  create_lowercase_ingress_prefix:
+    needs:
+    - create_ingress_prefix
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy-branch-to-namespace.yml@2
+    with:
+      branch: ${{ github.ref_name == 'main' && inputs.namespace || needs.create_ingress_prefix.outputs.ticket }}
     
-  recreate_dbildungs_iam_keycloak_db_name:
+  create_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
       db_name: ${{ steps.create_db_name.outputs.db_name }}
@@ -91,7 +96,7 @@ jobs:
           echo "before" ${{ inputs.namespace }} "after" $temp
           echo "db_name=$temp" >> $GITHUB_OUTPUT
 
-  recreate_dbildungs_iam_server_db_name:
+  create_dbildungs_iam_server_db_name:
     runs-on: ubuntu-latest
     outputs:
      db_name: ${{ steps.create_db_name.outputs.db_name }}
@@ -111,8 +116,9 @@ jobs:
       - find_schulportal_client_helm_chart_tag
       - find_dbildungs_iam_keycloak_helm_chart_tag
       - find_dbildungs_iam_ldap_helm_chart_tag
-      - recreate_dbildungs_iam_keycloak_db_name
-      - recreate_dbildungs_iam_server_db_name
+      - create_lowercase_ingress_prefix
+      - create_dbildungs_iam_keycloak_db_name
+      - create_dbildungs_iam_server_db_name
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -186,48 +192,62 @@ jobs:
               --wait
           fi
 
-      - name: Create all secrets
+      - name: Create dbildungs-iam-server secret
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
+  
+      - name: Create dbildungs-iam-server-redis secret
+        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-redis-secret-dev.yaml
+
+      - name: Create dbildungs-iam-keycloak secret
+        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
+
+      - name: Create dbildungs-iam-ldap secret
+        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
+
+      - name: Create dbildungs-iam-ldap modify secret
+        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
+
+      - name: Create dbildungs-iam-ldap apply secret
+        run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
 
-      - name: "Recreate Database for dbildungs-iam-keycloak - Recreate: ${{ inputs.database_recreation }}"
+      - name: Create Database for dbildungs-iam-keycloak
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
 
           # Define job name for Keycloak database creation job
-          HELM_KEYCLOAK_DB_JOB_NAME="psql-db-${DATE}-keycloak-${{ inputs.namespace }}"
+          HELM_KEYCLOAK_DB_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
-          # Recreate Database for dbildungs-iam-keycloak
+          # Deploy Database for dbildungs-iam-keycloak
           helm upgrade --install \
             $HELM_KEYCLOAK_DB_JOB_NAME \
-            ./charts/postgres_recreate_databases \
+            ./charts/postgres_config \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
-            --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
-            --set database.recreation=${{ inputs.database_recreation }}
+            --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }}
 
-      - name: "Recreate Database for dbildungs-iam-server - Recreate: ${{ inputs.database_recreation }}"
+
+      - name: Create Database for dbildungs-iam-server
         run: |
           # Generate timestamp for job name uniqueness
           DATE=$(date +%Y%m%d%H%M%S)
 
           # Define job name for SPSH-App database creation job
-          HELM_SERVER_DB_JOB_NAME="psql-db-${DATE}-database-${{ inputs.namespace }}"
+          HELM_SERVER_DB_JOB_NAME="psql-db-${DATE}-database-${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}"
 
-          # Recreate Database for SPSH-App 
+          # Deploy Database for SPSH-App 
           helm upgrade --install \
             $HELM_SERVER_DB_JOB_NAME \
-            ./charts/postgres_recreate_databases \
+            ./charts/postgres_config \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
-            --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
-            --set database.recreation=${{ inputs.database_recreation }}
+            --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }}
 
       # Wait is needed, dbildungs_iam_server expects keycloak to be up!
       - name: Deploy dbildungs_iam_keycloak Helm chart
@@ -237,9 +257,9 @@ jobs:
             dbildungs-iam-keycloak \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-keycloak" \
-            --set keycloakHostname=${{ inputs.namespace }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
+            --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
+            --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
+            --set database.name=${{ needs.create_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
             --set database.username=spshdeveloper \
             --wait \
             --timeout 210s
@@ -262,7 +282,7 @@ jobs:
             schulportal-client \
             schulportal-client \
             --namespace ${{ inputs.namespace }} \
-            --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
+            --set frontendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
             --wait \
             --timeout 60s
 
@@ -275,9 +295,9 @@ jobs:
             --set auth.existingSecret="dbildungs-iam-server" \
             --set redis-cluster.existingSecret="dbildungs-iam-server-redis" \
             --set redis.auth.existingSecret="dbildungs-iam-server-redis" \
-            --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
-            --set keycloakHostname=${{ inputs.namespace }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
+            --set backendHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de \
+            --set keycloakHostname=${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}-keycloak.dev.spsh.dbildungsplattform.de \
+            --set database.name=${{ needs.create_dbildungs_iam_server_db_name.outputs.db_name }} \
             ${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled={0}', inputs.dbseeding) || '' }} \
             --wait \
             --timeout 360s
@@ -304,10 +324,11 @@ jobs:
 
   run_playwright_tests:
     needs:
+      - create_lowercase_ingress_prefix
       - deployment
       - determine_playwright_branch
     uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
     secrets: inherit
     with:
-      frontendHostname: "${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de"
+      frontendHostname: "${{ needs.create_lowercase_ingress_prefix.outputs.namespace_from_branch }}.dev.spsh.dbildungsplattform.de"
       playwright_branch: ${{ needs.determine_playwright_branch.outputs.playwright_branch || 'main' }}
