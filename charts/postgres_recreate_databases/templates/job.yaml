@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-setup
+        image: schulcloud/infra-tools:{{ .Values.psql.imageTag }}
+        command: ["/bin/bash", "-c", "/scripts/config-script"]
+        resources: {{ toYaml .Values.psql.resources | nindent 12 }}
+        volumeMounts:
+        - name: config-script-volume
+          mountPath: /scripts
+        envFrom:
+        {{- if .Values.auth.existingSecret }}
+        - secretRef:
+            name: {{ .Values.auth.existingSecret }}
+        {{- end }}
+        {{- if not .Values.auth.existingSecret }}
+        - secretRef:
+            name: {{ .Release.Name }}
+        {{- end }}
+        env:
+        - name: DB_NAME
+          value: {{ .Values.database.name }}
+        - name: DB_RECREATE
+          value: "{{ .Values.database.recreation }}"
+      volumes:
+      - name: config-script-volume
+        configMap:
+          name: {{ .Release.Name }}
+          defaultMode: 457
+      restartPolicy: Never
