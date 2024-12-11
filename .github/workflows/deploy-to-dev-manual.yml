@@ -37,9 +37,9 @@ on:
         - "chart_value"
         - "true"
         - "false"
-      database_deletion:
+      database_recreation:
         required: true
-        description: "Delete Databases? Yes = true; No = false;"
+        description: "Recreate databases? Yes = true; No = false;"
         default: "false"
         type: choice
         options:
@@ -76,7 +76,7 @@ jobs:
       dbseeding: ${{ github.event.inputs.dbseeding }}
       namespace: ${{ needs.create_branch_identifier.outputs.namespace_from_branch }}
       user_name: spsh-bot
-      database_deletion: ${{ inputs.database_deletion }}
+      database_recreation: ${{ inputs.database_recreation }}
     secrets:
       SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 
