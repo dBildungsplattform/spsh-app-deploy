@@ -37,22 +37,16 @@ on:
         - "chart_value"
         - "true"
         - "false"
-      database_recreation:
-        required: true
-        description: "Recreate databases? Yes = true; No = false;"
-        default: "false"
-        type: choice
-        options:
-        - "true"
-        - "false"
 
 jobs:
   create_branch_identifier:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/convert-branch-name.yml@6
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy-branch-to-namespace.yml@2
     with:
       branch: ${{ github.event.inputs.namespace }}
   
   check_namespace_input:
+    needs:
+      - create_branch_identifier
     runs-on: ubuntu-latest
     steps:
     - name: Check if namespace is allowed, fails if it not starts with ticketnr, e.g. spsh-1234 or is exactly 'main'
@@ -67,7 +61,7 @@ jobs:
     needs:
       - check_namespace_input
       - create_branch_identifier
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@6
+    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/deploy.yml@5
     with:
       dbildungs_iam_server_branch: ${{ github.event.inputs.dbildungs_iam_server_branch }}
       schulportal_client_branch: ${{ github.event.inputs.schulportal_client_branch }}
@@ -76,7 +70,6 @@ jobs:
       dbseeding: ${{ github.event.inputs.dbseeding }}
       namespace: ${{ needs.create_branch_identifier.outputs.namespace_from_branch }}
       user_name: spsh-bot
-      database_recreation: ${{ inputs.database_recreation }}
     secrets:
       SPSH_DEV_KUBECONFIG: ${{ secrets.SPSH_DEV_KUBECONFIG }}
 

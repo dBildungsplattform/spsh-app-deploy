@@ -1,5 +1,5 @@
 ---
-name: Convert Branch Name
+name: Deploy Branch to Namespace
 
 on:
   workflow_call:
@@ -18,11 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       namespace_from_branch: ${{ steps.create_branch_identifier.outputs.namespace_from_branch }}
-    # This step will match and return either text-1234 or text-1234-1234 from the input branch name
     steps:
       - id: create_branch_identifier
         shell: bash
         run: |
-          temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | sed 's/\([[:alpha:]]*-[[:digit:]]*-[[:digit:]]*\).*/\1/' | sed 's/-*$//' | cut -c1-63)
-          echo "before:" ${{ inputs.branch }} "-- after: $temp"
+          temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | cut -c1-63)
+          echo "before" ${{ inputs.branch }} "after" $temp
           echo "namespace_from_branch=$temp" >> $GITHUB_OUTPUT
