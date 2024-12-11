@@ -7,7 +7,11 @@ data:
   config-script: |-
     #!/bin/bash
     echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '$DB_NAME';" | psql -d postgres -w
-    echo "DROP DATABASE IF EXISTS $DB_NAME" | psql -d postgres -w
+    if [ "$DB_RECREATE" = "true" ]; then
+      echo "DROP DATABASE IF EXISTS $DB_NAME" | psql -d postgres -w
+    else
+      echo "DB_RECREATE is not true. Progresses with creation of Database and User if they do not already exist."
+    fi
     echo "Create owner of the DB"
     echo "SELECT 'CREATE USER spshdeveloper' WHERE NOT EXISTS (SELECT FROM pg_user WHERE usename = 'spshdeveloper')\gexec" | psql -d postgres -w
     echo "GRANT spshdeveloper TO $PGUSER" | psql -d postgres -w
