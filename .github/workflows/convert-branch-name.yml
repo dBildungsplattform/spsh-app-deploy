@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       namespace_from_branch: ${{ steps.create_branch_identifier.outputs.namespace_from_branch }}
+    # This step will match and return either text-1234 or text-1234-1234 from the input branch name
     steps:
       - id: create_branch_identifier
         shell: bash
