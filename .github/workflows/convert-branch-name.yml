@@ -57,7 +57,7 @@ jobs:
           if [[ "${{ inputs.branch }}" == 'main' ]]; then
             chart_version=""
           else
-            chart_version="0.0.0-" ${{ steps.create_image_tag.outputs.image_tag }} "-${timestamp}"
+            chart_version="0.0.0-${{ steps.create_image_tag.outputs.image_tag }}-${timestamp}"
           fi
           echo "chart_version=${chart_version}" >> "$GITHUB_OUTPUT"
       
