@@ -40,9 +40,9 @@ jobs:
           regex_long='^([[:alpha:]]+?-[[:digit:]]+-[[:digit:]]+)'
           regex_short='^([[:alpha:]]+?-[[:digit:]]+)'
           if [[ "${{ inputs.branch }}" =~ $regex_long ]]; then
-            tag="$(echo '${BASH_REMATCH[1]}' | tr [A-Z] [a-z])"
+            tag="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
           elif [[ "${{ inputs.branch }}" =~ $regex_short ]]; then
-            tag="$(echo '${BASH_REMATCH[1]}' | tr [A-Z] [a-z])"
+            tag="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
           elif [[ "${{ inputs.branch }}" == 'main' ]]; then
             tag=""
           else
