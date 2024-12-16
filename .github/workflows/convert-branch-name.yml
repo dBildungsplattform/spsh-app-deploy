@@ -40,9 +40,9 @@ jobs:
           regex_long='^([[:alpha:]]+?-[[:digit:]]+-[[:digit:]]+)'
           regex_short='^([[:alpha:]]+?-[[:digit:]]+)'
           if [[ "${{ inputs.branch }}" =~ $regex_long ]]; then
-            tag="${BASH_REMATCH[1]}"
+            tag="$(echo '${BASH_REMATCH[1]}' | tr [A-Z] [a-z])"
           elif [[ "${{ inputs.branch }}" =~ $regex_short ]]; then
-            tag="${BASH_REMATCH[1]}"
+            tag="$(echo '${BASH_REMATCH[1]}' | tr [A-Z] [a-z])"
           elif [[ "${{ inputs.branch }}" == 'main' ]]; then
             tag=""
           else
@@ -57,7 +57,7 @@ jobs:
           if [[ "${{ inputs.branch }}" == 'main' ]]; then
             chart_version=""
           else
-            chart_version="0.0.0-$(echo ${{ steps.create_image_tag.outputs.image_tag }} | tr [A-Z] [a-z])-${timestamp}"
+            chart_version="0.0.0-" ${{ steps.create_image_tag.outputs.image_tag }} "-${timestamp}"
           fi
           echo "chart_version=${chart_version}" >> "$GITHUB_OUTPUT"
       
