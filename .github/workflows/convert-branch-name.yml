@@ -11,33 +11,30 @@ on:
     outputs:
       namespace_from_branch:
         description: "Branch in namespace compatible fashion"
-        value: ${{ jobs.convert_branch_name_to_namespace.outputs.namespace_from_branch }}
+        value: ${{ jobs.convert_branch_name.outputs.namespace_from_branch }}
       image_tag_from_branch:
         description: "Image tag from branch"
-        value: ${{ jobs.convert_branch_name_to_image_tag.outputs.image_tag }}
+        value: ${{ jobs.convert_branch_name.outputs.image_tag }}
       chart_version_from_branch:
         description: "Chart version from branch"
-        value: ${{ jobs.convert_branch_name_to_chart_version.outputs.chart_version }}
+        value: ${{ jobs.convert_branch_name.outputs.chart_version }}
 
 jobs:
-  convert_branch_name_to_namespace:
+  convert_branch_name:
     runs-on: ubuntu-latest
     outputs:
-      namespace_from_branch: ${{ steps.create_branch_identifier.outputs.namespace_from_branch }}
+      namespace_from_branch: ${{ steps.create_namespace.outputs.namespace_from_branch }}
+      image_tag: ${{ steps.create_image_tag.outputs.image_tag }}
+      chart_version: ${{ steps.create_chart_version.outputs.chart_version }}
     # This step will match and return either text-1234 or text-1234-1234 from the input branch name
     steps:
-      - id: create_branch_identifier
+      - id: create_namespace
         shell: bash
         run: |
           temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | sed 's/\([[:alpha:]]*-[[:digit:]]*-[[:digit:]]*\).*/\1/' | sed 's/-*$//' | cut -c1-63)
           echo "before:" ${{ inputs.branch }} "-- after: $temp"
           echo "namespace_from_branch=$temp" >> $GITHUB_OUTPUT
-  
-  convert_branch_name_to_image_tag:
-    runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.create_image_tag.outputs.image_tag }}
-    steps:
+      
       - id: create_image_tag
         run: |
           regex_long='^([[:alpha:]]+?-[[:digit:]]+-[[:digit:]]+)'
@@ -53,20 +50,14 @@ jobs:
             exit 1
           fi
           echo "image_tag=${tag}" >> "$GITHUB_OUTPUT"
-
-  convert_branch_name_to_chart_version:
-    needs:
-      - convert_branch_name_to_image_tag
-    runs-on: ubuntu-latest
-    outputs:
-      chart_version: ${{ steps.create_chart_version.outputs.chart_version }}
-    steps:
+      
       - id: create_chart_version
         run: |
           timestamp=`echo $(date +'%Y%m%d-%H%M')`
           if [[ "${{ inputs.branch }}" == 'main' ]]; then
             chart_version=""
           else
-            chart_version="0.0.0-$(echo ${{ needs.convert_branch_name_to_image_tag.outputs.image_tag }} | tr [A-Z] [a-z])-${timestamp}"
+            chart_version="0.0.0-$(echo ${{ steps.create_image_tag.outputs.image_tag }} | tr [A-Z] [a-z])-${timestamp}"
           fi
           echo "chart_version=${chart_version}" >> "$GITHUB_OUTPUT"
+      
