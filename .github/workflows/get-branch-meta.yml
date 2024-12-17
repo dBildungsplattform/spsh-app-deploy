@@ -3,15 +3,14 @@ on:
   workflow_call:
     outputs:
       branch:
-        description: "branch name"
+        description: "Branch name"
         value: ${{ jobs.branch_meta.outputs.branch }}
       sha:
-        description: "sha of the branch"
+        description: "SHA of the branch"
         value: ${{ jobs.branch_meta.outputs.sha }}
       ticket:
-        description: "ticketnr of the branchname"
+        description: "Ticketnr of the branchname"
         value: ${{ jobs.branch_meta.outputs.ticket }}
-
 
 jobs:
   branch_meta:
@@ -35,10 +34,13 @@ jobs:
       - name: Extract project-ticketnumber from branch
         id: extract_branch_ticket
         run: |
+          regex_long='^([[:alpha:]]+?-[[:digit:]]+-[[:digit:]]+)'
+          regex_short='^([[:alpha:]]+?-[[:digit:]]+)'
           if ${{ github.ref_name == 'main' }}; then
-            echo "ticket=main" >> $GITHUB_OUTPUT
-          else
-            regex='^([[:alpha:]]+?-[[:digit:]]+)'
-            [[ ${{ steps.extract_branch_meta.outputs.branch }} =~ $regex ]]
-            echo "ticket=$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])" >> $GITHUB_OUTPUT
+            ticket="main"
+          elif [[ "${{ github.ref_name }}" =~ $regex_long ]]; then
+            ticket="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
+          elif [[ "${{ github.ref_name }}" =~ $regex_short ]]; then
+            ticket="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
           fi
+          echo "ticket=${ticket}" >> "$GITHUB_OUTPUT"

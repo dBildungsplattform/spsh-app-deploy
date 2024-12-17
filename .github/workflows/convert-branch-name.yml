@@ -5,24 +5,59 @@ on:
   workflow_call:
     inputs:
       branch:
-        description: "original branch name"
+        description: "Original branch name"
         required: true
         type: string
     outputs:
       namespace_from_branch:
-        description: "branch in namespace compatible fashion"
-        value: ${{ jobs.convert_branch_name.outputs.namespace_from_branch }}
+        description: "Branch in namespace compatible fashion"
+        value: ${{ jobs.convert_branch_name.outputs.namespace }}
+      image_tag_from_branch:
+        description: "Image tag from branch"
+        value: ${{ jobs.convert_branch_name.outputs.image_tag }}
+      chart_version_from_branch:
+        description: "Chart version from branch"
+        value: ${{ jobs.convert_branch_name.outputs.chart_version }}
 
 jobs:
   convert_branch_name:
     runs-on: ubuntu-latest
     outputs:
-      namespace_from_branch: ${{ steps.create_branch_identifier.outputs.namespace_from_branch }}
+      namespace: ${{ steps.create_namespace_identifier.outputs.namespace }}
+      image_tag: ${{ steps.create_image_tag.outputs.image_tag }}
+      chart_version: ${{ steps.create_chart_version.outputs.chart_version }}
     # This step will match and return either text-1234 or text-1234-1234 from the input branch name
     steps:
-      - id: create_branch_identifier
+      - id: create_namespace_identifier
         shell: bash
         run: |
           temp=$(echo ${{ inputs.branch }} | sed 's@.*/@@' | tr [A-Z] [a-z] | tr _ - | tr \. - | sed 's/\([[:alpha:]]*-[[:digit:]]*-[[:digit:]]*\).*/\1/' | sed 's/-*$//' | cut -c1-63)
           echo "before:" ${{ inputs.branch }} "-- after: $temp"
-          echo "namespace_from_branch=$temp" >> $GITHUB_OUTPUT
+          echo "namespace=$temp" >> $GITHUB_OUTPUT
+      
+      - id: create_image_tag
+        run: |
+          regex_long='^([[:alpha:]]+?-[[:digit:]]+-[[:digit:]]+)'
+          regex_short='^([[:alpha:]]+?-[[:digit:]]+)'
+          if [[ "${{ inputs.branch }}" =~ $regex_long ]]; then
+            tag="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
+          elif [[ "${{ inputs.branch }}" =~ $regex_short ]]; then
+            tag="$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])"
+          elif [[ "${{ inputs.branch }}" == 'main' ]]; then
+            tag=""
+          else
+          echo "::error::Couldn't extract ticket from branch" ${{ inputs.branch }} ". If not main the branch name should begin alpha-digit or alpha-digit-digit blocks (e.g. SPSH-1234-test-name or release-1-1-optional-text)"
+            exit 1
+          fi
+          echo "image_tag=${tag}" >> "$GITHUB_OUTPUT"
+      
+      - id: create_chart_version
+        run: |
+          timestamp=`echo $(date +'%Y%m%d-%H%M')`
+          if [[ "${{ inputs.branch }}" == 'main' ]]; then
+            chart_version=""
+          else
+            chart_version="0.0.0-${{ steps.create_image_tag.outputs.image_tag }}-${timestamp}"
+          fi
+          echo "chart_version=${chart_version}" >> "$GITHUB_OUTPUT"
+      
