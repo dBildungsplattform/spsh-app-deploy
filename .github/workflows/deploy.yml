@@ -277,6 +277,7 @@ jobs:
             --set redis.auth.existingSecret="dbildungs-iam-server-redis" \
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
+            --set keycloakHostname=dbildungs-iam-keycloak \
             ${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled={0}', inputs.dbseeding) || '' }} \
             --wait \
             --timeout 360s
