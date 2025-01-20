@@ -189,7 +189,6 @@ jobs:
       - name: Create all secrets
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-redis-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
@@ -273,8 +272,6 @@ jobs:
             dbildungs-iam-server \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
-            --set redis-cluster.existingSecret="dbildungs-iam-server-redis" \
-            --set redis.auth.existingSecret="dbildungs-iam-server-redis" \
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set keycloakHostname=dbildungs-iam-keycloak \
