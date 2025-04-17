@@ -105,6 +105,20 @@ jobs:
           echo "before" ${{ inputs.namespace }} "after" $temp
           echo "db_name=$temp" >> $GITHUB_OUTPUT
 
+  recreate_kafka_topics_prefix:
+    runs-on: ubuntu-latest
+    outputs:
+      topics_prefix: ${{ steps.create_topics_prefix.outputs.topics_prefix }}
+    steps:
+      - id: create_topics_prefix
+        shell: bash
+        run: |
+          # kafka topics prefix creation at a single point
+          # Change every "." and "_" into "-", then remove all characters that are not alphanumeric, digit or an underscore and cut it on max length for topics prefix
+          temp=$(echo "${{ inputs.namespace }}" | tr _ - | tr \. - | sed 's/[^a-zA-Z0-9-]//g' | cut -c1-63)
+          echo "before" ${{ inputs.namespace }} "after" $temp
+          echo "topics_prefix=$temp" >> $GITHUB_OUTPUT
+
   deployment:
     needs: 
       - find_dbildungs_iam_server_helm_chart_tag
@@ -113,6 +127,7 @@ jobs:
       - find_dbildungs_iam_ldap_helm_chart_tag
       - recreate_dbildungs_iam_keycloak_db_name
       - recreate_dbildungs_iam_server_db_name
+      - recreate_kafka_topics_prefix
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -240,6 +255,7 @@ jobs:
             --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
             --set database.username=spshdeveloper \
+            --set kafka.prefix=${{ needs.recreate_kafka_topics_prefix.outputs.topics_prefix }}
             --wait \
             --timeout 210s
       
