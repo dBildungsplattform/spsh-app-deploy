@@ -1,0 +1,18 @@
+namespace: "kafka-config"
+kafka:
+  imageTag: 4.0.3 # For the latest version of infra-tools, refer to the infra-tools repository: https://github.com/hpi-schul-cloud/infra-tools/tree/master/infra-tools
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+    requests:
+      cpu: "100m"
+      memory: "1Gi"
+configMap:
+  defaultMode: 457
+kafka:
+  prefix: ""
+auth:
+  # existingSecret: Refers to a secret already present in the cluster, which is required for the authentication and configuration of the database setup tasks.
+  existingSecret: ""
+  kafka_host: ""

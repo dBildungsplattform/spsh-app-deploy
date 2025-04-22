@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: { { .Release.Name } }
+  namespace: { { .Values.namespace } }
+data:
+  topic-deletion-script: |-
+    #!/bin/bash
+    kafka-topics.sh \
+    --bootstrap-server "${KAFKA_URL}" \
+    --delete
+    --topic ":name-.*"
