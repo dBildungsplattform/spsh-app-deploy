@@ -241,7 +241,7 @@ jobs:
             --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
             --set database.username=spshdeveloper \
             --wait \
-            --timeout 210s
+            --timeout 300s
       
       # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
       - name: Deploy dbildungs_iam_ldap Helm chart
