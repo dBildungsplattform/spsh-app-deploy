@@ -27,7 +27,7 @@ on:
         default: main
         type: string
       dbildungs_iam_ldap_branch:
-        required: true
+        required: false
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
