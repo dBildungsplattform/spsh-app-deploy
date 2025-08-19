@@ -70,12 +70,12 @@ jobs:
       branch: ${{ inputs.dbildungs_iam_keycloak_branch }}
       chart_name: "dbildungs-iam-keycloak"
 
-  find_dbildungs_iam_ldap_helm_chart_tag:
-    uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@7
-    with:
-      github_repository: "dBildungsplattform/helm-charts-registry"
-      branch: ${{ inputs.dbildungs_iam_ldap_branch }}
-      chart_name: "dbildungs-iam-ldap"
+  # find_dbildungs_iam_ldap_helm_chart_tag:
+  #   uses: dBildungsplattform/spsh-app-deploy/.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml@7
+  #   with:
+  #     github_repository: "dBildungsplattform/helm-charts-registry"
+  #     branch: ${{ inputs.dbildungs_iam_ldap_branch }}
+  #     chart_name: "dbildungs-iam-ldap"
     
   recreate_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
@@ -110,7 +110,7 @@ jobs:
       - find_dbildungs_iam_server_helm_chart_tag
       - find_schulportal_client_helm_chart_tag
       - find_dbildungs_iam_keycloak_helm_chart_tag
-      - find_dbildungs_iam_ldap_helm_chart_tag
+      #- find_dbildungs_iam_ldap_helm_chart_tag
       - recreate_dbildungs_iam_keycloak_db_name
       - recreate_dbildungs_iam_server_db_name
     runs-on: 'ubuntu-latest'
@@ -160,10 +160,10 @@ jobs:
           wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
           tar -zxvf ${{ needs.find_dbildungs_iam_keycloak_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
-      - name: Download dbildungs_iam_ldap Helm chart
-        run: |
-          wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
-          tar -zxvf ${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
+      # - name: Download dbildungs_iam_ldap Helm chart
+      #   run: |
+      #     wget https://github.com/dBildungsplattform/helm-charts-registry/releases/download/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}/${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz
+      #     tar -zxvf ${{ needs.find_dbildungs_iam_ldap_helm_chart_tag.outputs.helm_chart_tagname }}.tgz 
 
       # On branches the ticket number is used as image tag. To ensure the pods are restarted
       # and pull the the latest image, we uninstall the helm release first. (Otherwise same tag -> no change)
@@ -190,9 +190,9 @@ jobs:
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
+          # kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
+          # kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
+          # kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
 
       - name: "Recreate Database for dbildungs-iam-keycloak - Recreate: ${{ inputs.database_recreation }}"
         run: |
@@ -244,16 +244,16 @@ jobs:
             --timeout 300s
       
       # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
-      - name: Deploy dbildungs_iam_ldap Helm chart
-        run: |
-          helm upgrade --install \
-            dbildungs-iam-ldap \
-            dbildungs-iam-ldap \
-            --namespace ${{ inputs.namespace }} \
-            --set global.existingSecret="dbildungs-iam-ldap" \
-            --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
-            --wait \
-            --timeout 90s
+      # - name: Deploy dbildungs_iam_ldap Helm chart
+      #   run: |
+      #     helm upgrade --install \
+      #       dbildungs-iam-ldap \
+      #       dbildungs-iam-ldap \
+      #       --namespace ${{ inputs.namespace }} \
+      #       --set global.existingSecret="dbildungs-iam-ldap" \
+      #       --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
+      #       --wait \
+      #       --timeout 90s
 
       - name: Deploy schulportal_client Helm chart
         run: |
