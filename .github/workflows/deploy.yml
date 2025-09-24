@@ -130,7 +130,7 @@ jobs:
         with:
           repository: 'dBildungsplattform/spsh-app-deploy'
           # comment this in to test changes of a branch in repo
-          # ref: "<branch_name>"
+          ref: "<branch_name>"
 
       - name: Set up kubectl and Helm
         uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f #v4.0.0
@@ -193,6 +193,7 @@ jobs:
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-kafka-secret-dev.yaml
 
       - name: "Recreate Database for dbildungs-iam-keycloak - Recreate: ${{ inputs.database_recreation }}"
         run: |
@@ -272,6 +273,7 @@ jobs:
             dbildungs-iam-server \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
+            --set auth.existingSecret="dbildungs-iam-kafka-tls"\
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set keycloakHostname=dbildungs-iam-keycloak \
