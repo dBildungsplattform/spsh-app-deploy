@@ -226,7 +226,6 @@ jobs:
             ./charts/postgres_recreate_databases \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="psql-config-secret" \
-            --set auth.existingSecret="dbildungs-iam-kafka-tls"
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set database.recreation=${{ inputs.database_recreation }}
 
@@ -274,6 +273,7 @@ jobs:
             dbildungs-iam-server \
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
+            --set auth.existingSecret="dbildungs-iam-kafka-tls"\
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set keycloakHostname=dbildungs-iam-keycloak \
