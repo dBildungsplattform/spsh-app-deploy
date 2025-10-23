@@ -6,4 +6,4 @@ metadata:
 data:
   db-deletion-script: |-
     #!/bin/bash
-    psql -d postgres -w -v name="$DB_NAME" <<< "DROP DATABASE IF EXISTS :name"
+    psql -d postgres -w -v name="$DB_NAME" <<< "DROP DATABASE IF EXISTS :name WITH (force)"
