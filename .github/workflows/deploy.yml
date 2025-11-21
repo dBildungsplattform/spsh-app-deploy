@@ -305,8 +305,11 @@ jobs:
     needs:
       - deployment
       - determine_playwright_branch
-    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/playwright.yml@main
+    uses: dBildungsplattform/schulportal-testautomatisierung/.github/workflows/run-playwright.yml@main
     secrets: inherit
     with:
       frontendHostname: "${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de"
       playwright_branch: ${{ needs.determine_playwright_branch.outputs.playwright_branch || 'main' }}
+      namespace_to_use: "${{ inputs.namespace }}"
+      tag: 'dev'
+      browser: 'chromium'
