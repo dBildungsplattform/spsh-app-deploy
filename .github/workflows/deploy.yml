@@ -141,6 +141,12 @@ jobs:
           echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
+      - name: Lock deployment
+        uses: directangular/k8s-lock-action@16be18141b23c2f8a34634af3cb91ba2ee83dba1 #V2
+        with:
+          kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG }}
+          lock_name: "deploy-${{ inputs.namespace }}-lock"
+
       - name: Create Kubernetes namespace
         run: |
           kubectl create namespace ${{ inputs.namespace }} || true
