@@ -145,23 +145,31 @@ jobs:
       - name: Debug + Sanitize Lock Name
         run: |
           echo "Raw GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
-          echo "Lowercase repo (from env): $GITHUB_REPOSITORY_LC"
 
-          RAW_LOCK="k8s-lock-${GITHUB_REPOSITORY_LC}-deploy-${{ inputs.namespace }}-lock"
-          echo "Generated lock BEFORE sanitize: $RAW_LOCK"
+          # Ensure lowercase repo is set
+          REPO_LC=$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')
+          echo "Repository Lowercase: $REPO_LC"
 
-          SANITIZED=$(echo "$RAW_LOCK" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]/-/g')
-          echo "Sanitized lock AFTER normalize: $SANITIZED"
+          RAW_LOCK="deploy-${{ inputs.namespace }}-lock"
+          echo "Base lock name: $RAW_LOCK"
+
+          SANITIZED="k8s-lock-${REPO_LC}-$RAW_LOCK"
+          SANITIZED=$(echo "$SANITIZED" | sed 's/[^a-z0-9.-]/-/g')
+          echo "Final sanitized lock name: $SANITIZED"
 
           echo "LOCK_NAME=$SANITIZED" >> $GITHUB_ENV
-          
+          echo "GITHUB_REPOSITORY=$REPO_LC" >> $GITHUB_ENV  # overwrite global repo var safely
+
       - name: Lock deployment
-        uses: directangular/k8s-lock-action@v2
+        uses: directangular/k8s-lock-action@v3
         env:
-          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY_LC }}
+          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
         with:
           kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
           lock_name: ${{ env.LOCK_NAME }}
+
+
+     
 
 
       - name: Create Kubernetes namespace
