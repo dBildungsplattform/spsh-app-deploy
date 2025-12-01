@@ -142,16 +142,27 @@ jobs:
           chmod 600 /home/runner/.kube/config
 
 
-      - name: Normalize GITHUB_REPOSITORY
-        run: echo "GITHUB_REPOSITORY_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+      - name: Debug + Sanitize Lock Name
+        run: |
+          echo "Raw GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          echo "Lowercase repo (from env): $GITHUB_REPOSITORY_LC"
 
+          RAW_LOCK="k8s-lock-${GITHUB_REPOSITORY_LC}-deploy-${{ inputs.namespace }}-lock"
+          echo "Generated lock BEFORE sanitize: $RAW_LOCK"
+
+          SANITIZED=$(echo "$RAW_LOCK" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]/-/g')
+          echo "Sanitized lock AFTER normalize: $SANITIZED"
+
+          echo "LOCK_NAME=$SANITIZED" >> $GITHUB_ENV
+          
       - name: Lock deployment
         uses: directangular/k8s-lock-action@v2
         env:
           GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY_LC }}
         with:
           kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
-          lock_name: "deploy-${{ inputs.namespace }}-lock"
+          lock_name: ${{ env.LOCK_NAME }}
+
 
       - name: Create Kubernetes namespace
         run: |
