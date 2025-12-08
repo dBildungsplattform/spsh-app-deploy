@@ -141,37 +141,13 @@ jobs:
           echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
-
-      - name: Debug + Sanitize Lock Name
-        run: |
-          echo "Raw GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
-
-          # Ensure lowercase repo is set
-          REPO_LC=$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')
-          echo "Repository Lowercase: $REPO_LC"
-
-          RAW_LOCK="deploy-${{ inputs.namespace }}-lock"
-          echo "Base lock name: $RAW_LOCK"
-
-          SANITIZED="k8s-lock-${REPO_LC}-$RAW_LOCK"
-          SANITIZED=$(echo "$SANITIZED" | sed 's/[^a-z0-9.-]/-/g')
-          echo "Final sanitized lock name: $SANITIZED"
-
-          echo "LOCK_NAME=$SANITIZED" >> $GITHUB_ENV
-          echo "GITHUB_REPOSITORY=$REPO_LC" >> $GITHUB_ENV  # overwrite global repo var safely
-
       - name: Lock deployment
-        uses: directangular/k8s-lock-action@v3
-        env:
-          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
+        uses: dBildungsplattform/k8s-lock-action@DBP-1765-SPSH-Improve-Dev-Pipelines
         with:
           kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
-          lock_name: ${{ env.LOCK_NAME }}
-
+          lock_name: "${{ inputs.namespace }}-deploy"
 
      
-
-
       - name: Create Kubernetes namespace
         run: |
           kubectl create namespace ${{ inputs.namespace }} || true
