@@ -148,7 +148,7 @@ jobs:
       #     lock_name: "${{ inputs.namespace }}-deploy"
 
       - name: Lock deployment
-        uses: suzuki-shunsuke/lock-action@v1 [web:8]
+        uses: suzuki-shunsuke/lock-action@v0.1.0
         with:
           mode: lock
           key: dev-${{ inputs.namespace }}
