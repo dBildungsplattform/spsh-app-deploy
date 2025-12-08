@@ -148,12 +148,13 @@ jobs:
       #     lock_name: "${{ inputs.namespace }}-deploy"
 
       - name: Lock deployment
-        uses: suzuki-shunsuke/lock-action@v0.1.0
+        uses: suzuki-shunsuke/lock-action@v0.1.6
         with:
           mode: lock
           key: dev-${{ inputs.namespace }}
-          max_wait_seconds: 480   
+          max_wait_seconds: "480"  
           post_unlock: "true" 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
      
       - name: Create Kubernetes namespace
