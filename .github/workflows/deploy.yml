@@ -141,11 +141,19 @@ jobs:
           echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
 
+      # - name: Lock deployment
+      #   uses: dBildungsplattform/k8s-lock-action@DBP-1765-SPSH-Improve-Dev-Pipelines
+      #   with:
+      #     kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
+      #     lock_name: "${{ inputs.namespace }}-deploy"
+
       - name: Lock deployment
-        uses: dBildungsplattform/k8s-lock-action@DBP-1765-SPSH-Improve-Dev-Pipelines
+        uses: suzuki-shunsuke/lock-action@v1 [web:8]
         with:
-          kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
-          lock_name: "${{ inputs.namespace }}-deploy"
+          mode: lock
+          key: dev-${{ inputs.namespace }}
+          max_wait_seconds: 480   
+          post_unlock: "true" 
 
      
       - name: Create Kubernetes namespace
