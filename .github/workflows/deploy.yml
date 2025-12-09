@@ -46,7 +46,7 @@ on:
         required: true
     
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   find_dbildungs_iam_server_helm_chart_tag:
