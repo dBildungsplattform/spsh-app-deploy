@@ -140,13 +140,6 @@ jobs:
           mkdir /home/runner/.kube/
           echo "${{ secrets.SPSH_DEV_KUBECONFIG }}" > /home/runner/.kube/config
           chmod 600 /home/runner/.kube/config
-
-      # - name: Lock deployment
-      #   uses: dBildungsplattform/k8s-lock-action@DBP-1765-SPSH-Improve-Dev-Pipelines
-      #   with:
-      #     kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
-      #     lock_name: "${{ inputs.namespace }}"
-
       - name: Create Kubernetes namespace
         run: |
           kubectl create namespace ${{ inputs.namespace }} || true
@@ -162,19 +155,19 @@ jobs:
           echo "Trying to acquire lock $LOCK_NAME in namespace $LOCK_NS ..."
           
           while kubectl get secret "$LOCK_NAME" -n "$LOCK_NS" >/dev/null 2>&1; do
-            echo "⏳ Lock exists – waiting... $ELAPSED / $TIMEOUT_SECONDS seconds elapsed."
+            echo "Lock exists – waiting $ELAPSED / $TIMEOUT_SECONDS seconds elapsed"
             
             sleep $SLEEP_INTERVAL
             ELAPSED=$((ELAPSED + SLEEP_INTERVAL))
 
             if [ $ELAPSED -ge $TIMEOUT_SECONDS ]; then
-              echo "❌ Timeout reached ($TIMEOUT_SECONDS seconds). Lock was not released."
+              echo "Timeout reached ($TIMEOUT_SECONDS seconds) Lock was not released"
               exit 1
             fi
           done
 
           kubectl create secret generic "$LOCK_NAME" -n "$LOCK_NS" --from-literal=locked=1
-          echo "✅ Lock acquired."
+          echo "✅ Lock acquired"
 
       - name: Download dbildungs_iam_server Helm chart
         run: |
@@ -318,7 +311,7 @@ jobs:
           LOCK_NS="${{ inputs.namespace }}"
 
           echo "Releasing lock $LOCK_NAME in namespace $LOCK_NS ..."
-          kubectl delete secret "$LOCK_NAME" -n "$LOCK_NS" >/dev/null 2>&1 || echo "Lock already gone."
+          kubectl delete secret "$LOCK_NAME" -n "$LOCK_NS" >/dev/null 2>&1 || echo "Lock already gone"
 
 
   determine_playwright_branch:
