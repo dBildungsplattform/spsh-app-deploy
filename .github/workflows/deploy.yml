@@ -145,7 +145,7 @@ jobs:
         uses: dBildungsplattform/k8s-lock-action@DBP-1765-SPSH-Improve-Dev-Pipelines
         with:
           kube_config_data: ${{ secrets.SPSH_DEV_KUBECONFIG_B64 }}
-          lock_name: "${{ inputs.namespace }}-deploy"
+          lock_name: "${{ inputs.namespace }}"
 
       - name: Create Kubernetes namespace
         run: |
