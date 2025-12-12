@@ -12,7 +12,6 @@ on:
         required: true
 permissions:
   contents: read
-
     
 jobs:
   recreate_dbildungs_iam_keycloak_db_name:
@@ -43,23 +42,10 @@ jobs:
           echo "before" ${{ inputs.namespace }} "after" $temp
           echo "db_name=$temp" >> $GITHUB_OUTPUT
 
-  create_ticket_nr_variable:
-    runs-on: ubuntu-latest
-    outputs:
-      ticket_nr: ${{ steps.extract_branch_ticket_nr.outputs.ticket_nr }}
-    steps:
-      - name: Extract project-ticketnumber from branch
-        id: extract_branch_ticket_nr
-        run: |
-          regex='^([[:alpha:]]+?-[[:digit:]]+)'
-          [[ ${{ inputs.namespace }} =~ $regex ]]
-          echo "ticket_nr=$(echo ${BASH_REMATCH[1]} | tr [A-Z] [a-z])" >> $GITHUB_OUTPUT
-
   delete_databases_and_namespace:
     needs: 
       - recreate_dbildungs_iam_keycloak_db_name
       - recreate_dbildungs_iam_server_db_name
-      - create_ticket_nr_variable
     runs-on: ubuntu-latest
     steps:
     - name: checkout repo
@@ -100,7 +86,7 @@ jobs:
         DATE=$(date +%Y%m%d%H%M%S)
 
         # Define job name for dbildungs_iam_keycloak database deletion job
-        HELM_KEYCLOAK_DB_DELETION_JOB_NAME="psql-db-${DATE}-keycloak-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
+        HELM_KEYCLOAK_DB_DELETION_JOB_NAME="psql-db-${DATE}-keycloak"
 
         # Deploy dbildungs_iam_keycloak database deletion job
         helm upgrade --install \
@@ -126,7 +112,7 @@ jobs:
         DATE=$(date +%Y%m%d%H%M%S)
 
         # Define job name for dbildungs_iam_server database deletion job
-        HELM_SERVER_DB_DELETION_JOB_NAME="psql-db-${DATE}-server-${{ needs.create_ticket_nr_variable.outputs.ticket_nr }}"
+        HELM_SERVER_DB_DELETION_JOB_NAME="psql-db-${DATE}-server"
 
         # Deploy dbildungs_iam_server database deletion job
         helm upgrade --install \
