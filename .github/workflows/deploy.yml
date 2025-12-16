@@ -161,7 +161,12 @@ jobs:
             ELAPSED=$((ELAPSED + SLEEP_INTERVAL))
 
             if [ $ELAPSED -ge $TIMEOUT_SECONDS ]; then
-              echo "Timeout reached ($TIMEOUT_SECONDS seconds) Lock was not released"
+              echo "We lock the rollout to a namespace to prevent multiple simultaneous
+              rollouts by creating a Kubernetes Secret in that namespace. Please try to
+              re-run the GitHub Actions workflow. If it fails a second time, the lock
+              may be stale. In that case, you may delete the Secret in the namespace 
+              manually and inform the SRE team so they can investigate a possible 
+              pipeline issue"
               exit 1
             fi
           done
