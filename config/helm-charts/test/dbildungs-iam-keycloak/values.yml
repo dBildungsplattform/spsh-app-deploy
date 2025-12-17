@@ -1,0 +1,29 @@
+keycloakHostname: keycloak.test.spsh.dbildungsplattform.de
+auth: 
+  existingSecret: dbildungs-iam-keycloak 
+database:
+  name: dbildungs_iam_keycloak_test
+  username: dbildungs_iam_keycloak_test
+
+image:
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 4
+    memory: 4Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+
+status:
+  url: "https://status.staging.spsh.dbildungsplattform.de/"
+
+# schoolsh:
+#   clientId:
+#   rootUrl:

@@ -1,0 +1,19 @@
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+
+resources:
+  limits:
+    cpu: 600m
+    memory: 1Gi
+  requests:
+    cpu: 150m
+    memory: 300Mi
+
+image:
+  pullPolicy: IfNotPresent
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: "60%"

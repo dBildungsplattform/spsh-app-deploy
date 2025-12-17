@@ -1,0 +1,1 @@
+frontendHostname: ${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de

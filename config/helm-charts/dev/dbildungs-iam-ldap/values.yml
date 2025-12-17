@@ -1,0 +1,9 @@
+global:
+  existingSecret: "dbildungs-iam-ldap"
+
+existingSecret: 
+  name: dbildungs-iam-ldap
+
+initTLSSecret:
+  tls_enabled: true
+  secret: "dbildungs-iam-ldap-tls" 

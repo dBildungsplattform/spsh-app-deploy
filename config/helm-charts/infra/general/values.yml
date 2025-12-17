@@ -1,0 +1,5 @@
+vault: spshinfra-dev-schulportal
+frontendHostname: spsh.spshinfra.spsh.dbildungsplattform.de 
+
+ionosLdap: 
+  enabled: true

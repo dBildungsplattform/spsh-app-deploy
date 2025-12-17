@@ -4,6 +4,10 @@ name: Deploy Action
 on:
   workflow_call:
     inputs:
+      instance_name:
+        type: string
+        default: dev
+        required: true
       namespace:
         required: true
         type: string
@@ -265,11 +269,7 @@ jobs:
             dbildungs-iam-keycloak \
             dbildungs-iam-keycloak \
             --namespace ${{ inputs.namespace }} \
-            --set auth.existingSecret="dbildungs-iam-keycloak" \
-            --set keycloakHostname=${{ inputs.namespace }}-keycloak.dev.spsh.dbildungsplattform.de \
-            --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }} \
-            --set database.username=spshdeveloper \
+            --values ./config/helm-charts/${{ inputs.instance_name }}/dbildungs-iam-keycloak/values.yml \
             --wait \
             --timeout 300s
       
@@ -280,8 +280,7 @@ jobs:
             dbildungs-iam-ldap \
             dbildungs-iam-ldap \
             --namespace ${{ inputs.namespace }} \
-            --set global.existingSecret="dbildungs-iam-ldap" \
-            --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
+            --values ./config/helm-charts/${{ inputs.instance_name }}/dbildungs-iam-ldap/values.yml \
             --wait \
             --timeout 90s
 
@@ -291,6 +290,7 @@ jobs:
             schulportal-client \
             schulportal-client \
             --namespace ${{ inputs.namespace }} \
+            --values ./config/helm-charts/${{ inputs.instance_name }}/schulportal-client/values.yml \
             --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --wait \
             --timeout 60s
@@ -301,12 +301,7 @@ jobs:
             dbildungs-iam-server \
             dbildungs-iam-server \
             --namespace ${{ inputs.namespace }} \
-            --set auth.existingSecret="dbildungs-iam-server" \
-            --set auth.existingSecret="dbildungs-iam-kafka-tls"\
-            --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
-            --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
-            --set keycloakHostname=dbildungs-iam-keycloak \
-            ${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled={0}', inputs.dbseeding) || '' }} \
+            --values ./config/helm-charts/${{ inputs.instance_name }}/dbildungs-iam-server/values.yml \
             --wait \
             --timeout 360s
       - name: Release deploy lock

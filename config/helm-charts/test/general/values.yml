@@ -1,0 +1,4 @@
+vault: spsh-test-schulportal
+frontendHostname: spsh.test.spsh.dbildungsplattform.de
+
+namespace: spsh-test

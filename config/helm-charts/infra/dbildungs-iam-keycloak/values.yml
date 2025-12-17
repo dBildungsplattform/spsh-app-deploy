@@ -1,0 +1,12 @@
+keycloakHostname: keycloak.spshinfra.spsh.dbildungsplattform.de 
+auth: 
+  existingSecret: dbildungs-iam-keycloak 
+database:
+  name: dbildungs_iam_keycloak
+  username: dbildungs_iam_keycloak
+
+autoscaling:
+  enabled: true
+
+image:
+  pullPolicy: IfNotPresent

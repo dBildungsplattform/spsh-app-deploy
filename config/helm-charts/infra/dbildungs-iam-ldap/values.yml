@@ -1,0 +1,22 @@
+global:
+  existingSecret: "dbildungs-iam-ldap"
+
+persistence:
+  enabled: true
+  size: 4Gi
+
+service:
+  type: LoadBalancer
+  externalIp: true
+  # if enabled you need to have to set the LOADBALANCER_SOURCERANGES key with value in the existingSecret
+  # later add the servicecenter ips so the prometheus blackbox exporter has access
+  # SourceRangesRestriction: true
+  SourceRangesRestriction: false
+  enableLdapPort: false
+
+existingSecret: 
+  name: dbildungs-iam-ldap
+
+initTLSSecret:
+  tls_enabled: true
+  secret: "dbildungs-iam-ldap-tls" 

@@ -1,0 +1,72 @@
+keycloakHostname: dbildungs-iam-keycloak
+keycloakExternalHostname: "keycloak.test.spsh.dbildungsplattform.de"
+auth:
+  existingSecret: dbildungs-iam-server
+
+database:
+  name: dbildungs_iam_server_test
+  username: dbildungs_iam_server_test
+backendHostname: spsh.test.spsh.dbildungsplattform.de
+
+backend:
+  dbseeding:
+    enabled: false
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
+    requests:
+      cpu: 0.5
+      memory: 500Mi
+  image:
+    pullPolicy: IfNotPresent
+
+# ldap:
+#   url: ldaps://ldap-write.qs.schule-sh.de
+#   oeffentlicheSchulenDomain: qs.schule-sh.de
+#   ersatzschulenDomain: qs.ersatzschule-sh.de
+#   base_dn: dc=qs,dc=schule-sh,dc=de
+#   retryWrapperDefaultRetries: 5
+
+itslearning:
+  enabled: false
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+
+privacyidea:
+  url: https://privacyidea.test.spsh.dbildungsplattform.de
+  renameWaitingTime: 3
+
+system:
+  rename_waiting_time_in_seconds: 3
+
+status:
+  url: "https://status.staging.spsh.dbildungsplattform.de/"
+
+ox:
+  enabled: false
+#   username: "oxadmin"
+#   endpoint: ""
+#   contextId: "10"
+#   contextName: "10"
+
+email:
+  nonEnabledEmailAddressesDeadlineInDays: 180
+
+cronjobs:
+  enabled: true
+
+kafka:
+  enabled: true
+  initEnabled: true
+  sessionTimeout: 300000
+  heartbeatInterval: 10000
+
+redis: 
+  host: dbildungs-iam-redis-master.spsh-test.svc.cluster.local
+
+featureFlags:
+  rolleErweitern: true

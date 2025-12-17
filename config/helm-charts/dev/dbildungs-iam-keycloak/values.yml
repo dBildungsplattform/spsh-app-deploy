@@ -1,0 +1,8 @@
+keycloakHostname: ${{ inputs.namespace }}-keycloak.dev.spsh.dbildungsplattform.de
+frontendHostname: ${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+
+auth: 
+  existingSecret: dbildungs-iam-keycloak 
+database:
+  name: ${{ needs.recreate_dbildungs_iam_keycloak_db_name.outputs.db_name }}
+  username: spshdeveloper

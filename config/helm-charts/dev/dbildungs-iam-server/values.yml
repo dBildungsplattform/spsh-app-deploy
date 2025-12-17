@@ -1,0 +1,12 @@
+keycloakHostname: dbildungs-iam-keycloak
+
+auth: 
+  # existingSecret: dbildungs-iam-server
+  existingSecret: dbildungs-iam-kafka-tls
+
+database:
+  name: ${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }}
+  username: dbildungs_iam_server
+backendHostname: ${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de
+
+${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled: 0', inputs.dbseeding) || '' }}

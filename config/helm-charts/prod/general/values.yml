@@ -1,0 +1,4 @@
+vault: spsh-prod-schulportal
+frontendHostname: portal.schule-sh.de
+keycloak2ndHostname: ""
+frontend2ndHostname: ""

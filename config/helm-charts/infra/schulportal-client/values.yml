@@ -1,0 +1,4 @@
+autoscaling:
+  enabled: true
+image:
+  pullPolicy: IfNotPresent
