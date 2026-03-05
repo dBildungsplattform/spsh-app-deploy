@@ -218,6 +218,7 @@ jobs:
       - name: Create all secrets
         run: |
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-secret-dev.yaml
+          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-email-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
