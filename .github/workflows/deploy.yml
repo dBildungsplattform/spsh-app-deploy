@@ -304,6 +304,7 @@ jobs:
             --namespace ${{ inputs.namespace }} \
             --set auth.existingSecret="dbildungs-iam-server" \
             --set auth.existingSecret="dbildungs-iam-kafka-tls"\
+            --set emailMicroserviceAuth.existingSecret="dbildungs-iam-server-email"\
             --set backendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set keycloakHostname=dbildungs-iam-keycloak \
