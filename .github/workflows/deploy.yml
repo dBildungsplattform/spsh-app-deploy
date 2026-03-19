@@ -277,7 +277,7 @@ jobs:
             --wait \
             --timeout 300s
 
-      # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret in not enabled (default: false) - only necessary for External IP
+      # even though the initTLSSecret.secret value is set it has no effect if the initTLSSecret is not enabled (default: false) - only necessary for External IP
       - name: Deploy dbildungs_iam_ldap Helm chart
         run: |
           helm upgrade --install \
