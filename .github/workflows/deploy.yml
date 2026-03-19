@@ -273,7 +273,7 @@ jobs:
             --set database.username=spshdeveloper \
             --set ingress.ingressClassName="nginx-loadbalancerip" \
             --set ingress.tls=true \
-            --set ingress.tlsSecretName="spsh/schulportal_loadbalancerip_ingress_tls_secret" \
+            --set ingress.tlsSecretName="schulportal_loadbalancerip_ingress_tls_secret" \
             --wait \
             --timeout 300s
 
@@ -298,7 +298,7 @@ jobs:
             --set frontendHostname=${{ inputs.namespace }}.dev.spsh.dbildungsplattform.de \
             --set ingress.ingressClassName="nginx-loadbalancerip" \
             --set ingress.tls=true \
-            --set ingress.tlsSecretName="spsh/schulportal_loadbalancerip_ingress_tls_secret" \
+            --set ingress.tlsSecretName="schulportal_loadbalancerip_ingress_tls_secret" \
             --wait \
             --timeout 60s
 
@@ -317,7 +317,7 @@ jobs:
             ${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled={0}', inputs.dbseeding) || '' }} \
             --set ingress.ingressClassName="nginx-loadbalancerip" \
             --set ingress.tls=true \
-            --set ingress.tlsSecretName="spsh/schulportal_loadbalancerip_ingress_tls_secret" \
+            --set ingress.tlsSecretName="schulportal_loadbalancerip_ingress_tls_secret" \
             --wait \
             --timeout 360s
       - name: Release deploy lock
