@@ -315,9 +315,9 @@ jobs:
             --set database.name=${{ needs.recreate_dbildungs_iam_server_db_name.outputs.db_name }} \
             --set keycloakHostname=dbildungs-iam-keycloak \
             ${{ inputs.dbseeding != 'chart_value' && format('--set backend.dbseeding.enabled={0}', inputs.dbseeding) || '' }} \
-            --set ingress.ingressClassName="nginx-loadbalancerip" \
-            --set ingress.tls=true \
-            --set ingress.tlsSecretName="schulportal-tls" \
+            --set backend.ingress.ingressClassName="nginx-loadbalancerip" \
+            --set backend.ingress.tls=true \
+            --set backend.ingress.tlsSecretName="schulportal-tls" \
             --wait \
             --timeout 360s
       - name: Release deploy lock
