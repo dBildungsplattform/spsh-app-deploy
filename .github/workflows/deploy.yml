@@ -73,10 +73,10 @@ jobs:
   find_dbildungs_iam_ldap_helm_chart_tag:
     uses: ./.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml
     with:
-      github_repository: "dBildungsplattform/helm-charts-registry"
+      github_repository: "dBildungsplattform/helm-charts"
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
       chart_name: "389ds"
-    
+
   recreate_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
     outputs:
