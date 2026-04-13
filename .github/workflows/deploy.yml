@@ -261,7 +261,7 @@ jobs:
         run: |
           helm upgrade --install \
             dbildungs-iam-ldap \
-            389ds \
+            dbildungsplattform/389ds \
             --namespace ${{ inputs.namespace }} \
             --values ./dbildungs-iam-ldap-values.yaml
             --wait \
