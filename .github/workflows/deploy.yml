@@ -75,7 +75,7 @@ jobs:
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
-      chart_name: "dbildungs-iam-ldap"
+      chart_name: "389ds"
     
   recreate_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
@@ -279,7 +279,7 @@ jobs:
         run: |
           helm upgrade --install \
             dbildungs-iam-ldap \
-            helm-charts/389ds \
+            389ds \
             --namespace ${{ inputs.namespace }} \
             --values ./dbildungs-iam-ldap-values.yaml
             --wait \
