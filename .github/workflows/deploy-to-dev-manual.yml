@@ -72,6 +72,7 @@ jobs:
       dbildungs_iam_server_branch: ${{ github.event.inputs.dbildungs_iam_server_branch }}
       schulportal_client_branch: ${{ github.event.inputs.schulportal_client_branch }}
       dbildungs_iam_keycloak_branch: ${{ github.event.inputs.dbildungs_iam_keycloak_branch }}
+      dbildungs_iam_ldap_branch: ${{ github.event.inputs.dbildungs_iam_ldap_branch }}
       dbseeding: ${{ github.event.inputs.dbseeding }}
       namespace: ${{ needs.create_branch_identifier.outputs.namespace_from_branch }}
       user_name: spsh-bot
