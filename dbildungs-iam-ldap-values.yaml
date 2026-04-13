@@ -1,0 +1,85 @@
+---
+fullnameOverride: "dbildungs-iam-ldap"
+
+service:
+  insecurePort: 389
+
+customSchema: |
+  dn: cn=schema
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.1 NAME 'mailPrimaryAddress' DESC 'Primary mailaddresses for the user' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.2 NAME 'mailAlternativeAddress' DESC 'Secondary (alias) mailaddresses for the same user' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.3 NAME 'mailGlobalSpamFolder' DESC 'Move Spam to global spam folder instead of local spam folder' EQUALITY caseIgnoreIA5Match SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.47 NAME 'mailForwardAddress' DESC 'External mail addresses to forward the users emails to' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.51 NAME 'mailForwardCopyToSelf' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{10} SINGLE-VALUE )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.60 NAME 'univentionMailHomeServer' DESC 'home server of users mailbox' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} SINGLE-VALUE )
+  attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.92 NAME 'univentionMailUserQuota' DESC 'Mailbox hard quota limit in MB' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+  objectClasses: ( 1.3.6.1.4.1.10176.1010.2.1 NAME 'univentionMail' DESC 'Univention Mail Preferences' SUP top AUXILIARY MUST uid MAY ( univentionMailHomeServer $ mailPrimaryAddress $ mailAlternativeAddress $ mailGlobalSpamFolder $ univentionMailUserQuota $ mailForwardAddress $ mailForwardCopyToSelf ) )
+
+persistence:
+  enabled: false
+
+dsSuffixName: "dc=schule-sh,dc=de"
+
+extendedBootstrap:
+  enabled: true
+  peers: "dbildungs-iam-ldap-0.dbildungs-iam-ldap-headless"
+  rmPassword:
+    secretName: dbildungs-iam-ldap
+    secretKey: LDAP_ADMIN_PASSWORD
+  importLdif: |
+    dn: dc=schule-sh,dc=de
+    objectClass: top
+    objectClass: domain
+    dc: schule-sh
+    aci: (targetattr="dc || description || objectClass")(targetfilter="(objectClas
+      s=domain)")(version 3.0; acl "Enable anyone domain read"; allow (read, search
+      , compare)(userdn="ldap:///anyone");)
+    dsEntryDN: dc=schule-sh,dc=de
+    
+    dn: ou=oeffentlicheSchulen,dc=schule-sh,dc=de
+    objectclass: organizationalUnit
+    objectclass: top
+    ou: oeffentlicheSchulen
+    
+    dn: ou=ersatzSchulen,dc=schule-sh,dc=de
+    objectclass: organizationalUnit
+    objectclass: top
+    ou: ersatzSchulen
+    
+    dn: cn=mmusterschueler,ou=oeffentlicheSchulen,dc=schule-sh,dc=de
+    uid: mmusterschueler
+    cn: mmusterschueler
+    givenname: Moritz
+    objectclass: inetOrgPerson
+    objectclass: univentionMail
+    mailPrimaryAddress: moritz.muster-schueler@schule-sh.de
+    mailAlternativeAddress: moritz.muster-schueler@schule-sh.de
+    objectclass: top
+    sn: Muster-Schueler
+    
+    dn: cn=ssuperadmin,ou=oeffentlicheSchulen,dc=schule-sh,dc=de
+    uid: ssuperadmin
+    cn: ssuperadmin
+    givenname: Susi
+    objectclass: inetOrgPerson
+    objectclass: univentionMail
+    mailPrimaryAddress: susi.superadmin@schule-sh.de
+    mailAlternativeAddress: susi.superadmin@schule-sh.de
+    objectclass: top
+    sn: Superadmin
+    
+    dn: cn=lehrer,dc=schule-sh,dc=de
+    cn: lehrer
+    objectclass: groupOfUniqueNames
+    objectclass: top
+    uniquemember: cn=ssuperadmin,ou=oeffentlicheSchulen,dc=schule-sh,dc=de
+    
+    dn: cn=schueler,dc=schule-sh,dc=de
+    cn: schueler
+    objectclass: groupOfUniqueNames
+    objectclass: top
+    uniquemember: cn=mmusterschueler,ou=oeffentlicheSchulen,dc=schule-sh,dc=de
+
+dsDmPassword:
+  secretKey: LDAP_ADMIN_PASSWORD
+  secretName: dbildungs-iam-ldap
