@@ -203,8 +203,6 @@ jobs:
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-server-email-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-keycloak-secret-dev.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-secret-dev.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-modify.yaml
-          kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-ldap-config-apply.yaml
           kubectl --namespace=${{ inputs.namespace }} apply -f ./dbildungs-iam-kafka-secret-dev.yaml
 
       - name: "Recreate Database for dbildungs-iam-keycloak - Recreate: ${{ inputs.database_recreation }}"
@@ -265,8 +263,7 @@ jobs:
             dbildungs-iam-ldap \
             389ds \
             --namespace ${{ inputs.namespace }} \
-            --set global.existingSecret="dbildungs-iam-ldap" \
-            --set initTLSSecret.secret="dbildungs-iam-ldap-tls" \
+            --values ./dbildungs-iam-ldap-values.yaml
             --wait \
             --timeout 90s
 
