@@ -16,7 +16,7 @@ on:
         description: "Name of the helm chart to search"
         type: string
       version:
-        required: true
+        required: false
         description: "Version of the helm chart to search"
         type: string
         default: "0.0.0"
