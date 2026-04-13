@@ -76,6 +76,7 @@ jobs:
       github_repository: "dBildungsplattform/helm-charts"
       branch: ${{ inputs.dbildungs_iam_ldap_branch }}
       chart_name: "389ds"
+      version: ".*"
 
   recreate_dbildungs_iam_keycloak_db_name:
     runs-on: ubuntu-latest
