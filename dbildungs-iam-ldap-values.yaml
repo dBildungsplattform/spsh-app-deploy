@@ -1,5 +1,5 @@
 ---
-fullnameOverride: "dbildungs-iam-ldap-389ds"
+fullnameOverride: "dbildungs-iam-ldap"
 
 customSchema: |
   dn: cn=schema
@@ -19,7 +19,7 @@ dsSuffixName: "dc=schule-sh,dc=de"
 
 extendedBootstrap:
   enabled: true
-  peers: "dbildungs-iam-ldap-389ds-0.dbildungs-iam-ldap-389ds-0-headless"
+  peers: "dbildungs-iam-ldap-0.dbildungs-iam-ldap-0-headless"
   rmPassword:
     secretName: dbildungs-iam-ldap
     secretKey: LDAP_ADMIN_PASSWORD
