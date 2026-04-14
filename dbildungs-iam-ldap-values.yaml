@@ -1,4 +1,6 @@
 ---
+fullnameOverride: "dbildungs-iam-ldap-389ds"
+
 customSchema: |
   dn: cn=schema
   attributeTypes: ( 1.3.6.1.4.1.10176.1010.1.1 NAME 'mailPrimaryAddress' DESC 'Primary mailaddresses for the user' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
@@ -17,7 +19,7 @@ dsSuffixName: "dc=schule-sh,dc=de"
 
 extendedBootstrap:
   enabled: true
-  peers: "dbildungs-iam-ldap-0.dbildungs-iam-ldap-0-headless"
+  peers: "dbildungs-iam-ldap-389ds-0.dbildungs-iam-ldap-389ds-0-headless"
   rmPassword:
     secretName: dbildungs-iam-ldap
     secretKey: LDAP_ADMIN_PASSWORD
