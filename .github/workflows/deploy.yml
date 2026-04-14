@@ -282,7 +282,7 @@ jobs:
             dbildungs-iam-ldap \
             389ds \
             --namespace ${{ inputs.namespace }} \
-            --values ./dbildungs-iam-ldap-values.yaml
+            --values ./dbildungs-iam-ldap-values.yaml \
             --wait \
             --timeout 90s
 
