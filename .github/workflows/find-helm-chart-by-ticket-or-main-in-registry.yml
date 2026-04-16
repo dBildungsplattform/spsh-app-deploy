@@ -20,6 +20,11 @@ on:
         description: "Version of the helm chart to search"
         type: string
         default: "0.0.0"
+      mainVersion:
+        required: false
+        description: "Version of the helm chart to search"
+        type: string
+        default: "0.0.1"
     outputs:
       helm_chart_tagname: 
         description: "Tagname of the helm-chart"
@@ -56,7 +61,7 @@ jobs:
         id: getMainByReleaseNameRegEx
         uses: cardinalby/git-get-release-action@cedef2faf69cb7c55b285bad07688d04430b7ada #1.2.4
         with:
-          releaseNameRegEx: "${{ inputs.chart_name }}-${{ inputs.version }}-"
+          releaseNameRegEx: "${{ inputs.chart_name }}-${{ inputs.mainVersion }}-"
           doNotFailIfNotFound: 'true'
           searchLimit: 100000
           repo: "${{ inputs.github_repository }}"
