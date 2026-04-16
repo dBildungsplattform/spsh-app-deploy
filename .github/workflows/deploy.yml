@@ -76,7 +76,7 @@ jobs:
       github_repository: "dBildungsplattform/helm-charts-registry"
       branch: ${{ inputs.port389ds_branch }}
       chart_name: "389ds"
-      version: "0.1.\\\d*"
+      version: "0.1.\\d*"
       mainVersion: ".*"
 
   recreate_dbildungs_iam_keycloak_db_name:
