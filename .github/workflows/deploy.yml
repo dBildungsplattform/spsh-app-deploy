@@ -26,7 +26,7 @@ on:
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
-      dbildungs_iam_ldap_branch:
+      389ds_branch:
         required: true
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
@@ -74,7 +74,7 @@ jobs:
     uses: ./.github/workflows/find-helm-chart-by-ticket-or-main-in-registry.yml
     with:
       github_repository: "dBildungsplattform/helm-charts-registry"
-      branch: ${{ inputs.dbildungs_iam_ldap_branch }}
+      branch: ${{ inputs.389ds_branch }}
       chart_name: "389ds"
       version: ".*"
 
