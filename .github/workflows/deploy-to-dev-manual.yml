@@ -25,7 +25,7 @@ on:
         type: string
       port389ds_branch:
         required: true
-        description: "ds389 Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        description: "389ds Branch. Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
       dbseeding:
