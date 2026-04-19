@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: db-deletion-job
-        image: schulcloud/infra-tools:{{ .Values.psql.imageTag }}
+        image: ghcr.io/dbildungsplattform/cron-tools:{{ .Values.psql.imageTag }}
         command: ["/bin/bash", "-c", "/scripts/db-deletion-script"]
         resources: {{ toYaml .Values.psql.resources | nindent 12 }}
         volumeMounts:
