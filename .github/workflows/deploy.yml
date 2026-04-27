@@ -31,6 +31,12 @@ on:
         description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
         default: main
         type: string
+      # left for backward compatiblity (otherwise: "dbildungs_iam_ldap_branch is not defined in the referenced workflow")
+      dbildungs_iam_ldap_branch:
+        required: false
+        description: "Has to be main or in format <project>-<ticketnumber>, e.g. spsh-130"
+        default: main
+        type: string
       dbseeding:
         required: false
         description: "Enable Seeding (true, false, chart_value)"
